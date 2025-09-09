@@ -6,6 +6,7 @@ from flask_wtf.csrf import CSRFProtect
 from flask_mail import Mail
 from flask_apscheduler import APScheduler
 from config import Config
+from flask_migrate import Migrate
 
 # Initialize extensions outside the factory
 db = SQLAlchemy()
@@ -14,6 +15,7 @@ cors = CORS()
 csrf = CSRFProtect()
 mail = Mail()
 scheduler = APScheduler()
+migrate = Migrate()
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -21,6 +23,7 @@ def create_app(config_class=Config):
     
     # Initialize extensions with the app instance
     db.init_app(app)
+    migrate.init_app(app, db)
     api.init_app(app)
     cors.init_app(app)
     csrf.init_app(app)

@@ -6,3 +6,4 @@ Flask-WTF
 Flask-CORS
 Flask-APScheduler
 Flask-Mail
+Flask-Migrate
