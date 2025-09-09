@@ -1,0 +1,8 @@
+Flask
+Flask-RESTful
+Flask-SQLAlchemy
+# psycopg2-binary
+Flask-WTF
+Flask-CORS
+Flask-APScheduler
+Flask-Mail
