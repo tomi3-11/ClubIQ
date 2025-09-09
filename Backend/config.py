@@ -14,13 +14,13 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # Secret key for sessions and CSRF protection
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'your-very-secret-key-change-this'
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'a-very-hard-to-guess-string'
     
-    # Flask-Mail configuration for sending emails
-    MAIL_SERVER = 'smtp.googlemail.com'
-    MAIL_PORT = 587
-    MAIL_USE_TLS = True
-    MAIL_USERNAME = os.environ.get('EMAIL_USER')
-    MAIL_PASSWORD = os.environ.get('EMAIL_PASS')
+    # Mail configuration
+    MAIL_SERVER = os.environ.get('MAIL_SERVER')
+    MAIL_PORT = int(os.environ.get('MAIL_PORT') or 587)
+    MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS') is not None
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     
     

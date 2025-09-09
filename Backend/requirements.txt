@@ -7,3 +7,4 @@ Flask-CORS
 Flask-APScheduler
 Flask-Mail
 Flask-Migrate
+python-dotenv

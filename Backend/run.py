@@ -1,9 +1,13 @@
 import os
 from app import create_app, db
 from app.models import Member, Event, Attendance, Project
+from dotenv import load_dotenv
 
 # Create the application instance
 app = create_app()
+
+# Load environmental variables from .env file
+load_dotenv()
 
 # Set up a shell context for easy debugging with 'flask shell'
 @app.shell_context_processor

@@ -13,3 +13,5 @@ venv
 app.db 
 sqlite3.db
 .db
+migrations
+instance
