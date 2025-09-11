@@ -3,6 +3,7 @@ from flask_restful import Resource, Api
 from app import db, api
 from app.models import User
 from app.forms import RegistrationForm
+from flask_jwt_extended import create_access_token
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api')
 api = Api(auth_bp)
@@ -54,8 +55,9 @@ class LoginResouce(Resource):
         user = User.query.filter_by(username=username).first()
         
         if user and user.check_password(password):
+            access_token = create_access_token(identity=user.id) # Create a jwt
             return {
-                "message": "Logged in successfully"
+                "message": "Logged in successfully", "access_token": access_token
             }, 200
         else:
             return {

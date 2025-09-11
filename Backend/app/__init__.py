@@ -8,6 +8,7 @@ from flask_apscheduler import APScheduler
 from config import Config
 from flask_migrate import Migrate
 import os
+from flask_jwt_extended import JWTManager
 
 # Initialize extensions outside the factory
 db = SQLAlchemy()
@@ -17,6 +18,7 @@ csrf = CSRFProtect()
 mail = Mail()
 scheduler = APScheduler()
 migrate = Migrate()
+jwt = JWTManager()
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -24,6 +26,9 @@ def create_app(config_class=Config):
         app.config.from_object(os.environ.get('FLASK_CONFIG_TYPE', 'default'))
     else:
         app.config.from_object(config_class)
+        
+    # Set the secret key for JWTs
+    app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY", "my-secret-super_key-that-i-should-consider-changing-😁")
     
     # Initialize extensions with the app instance
     db.init_app(app)
@@ -32,6 +37,7 @@ def create_app(config_class=Config):
     cors.init_app(app)
     csrf.init_app(app)
     mail.init_app(app)
+    jwt.init_app(app)
     
     # Register blueprints for modularity
     from app.members.routes import members_bp

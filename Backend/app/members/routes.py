@@ -5,6 +5,7 @@ from app import api, db
 from app.models import Member
 from app.forms import MemberForm
 
+
 members_bp = Blueprint("members", __name__, url_prefix="/api/members")
 api = Api(members_bp)
 
