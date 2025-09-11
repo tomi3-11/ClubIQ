@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, TextAreaField, DateTimeField
-from wtforms.validators import Email, DataRequired, Length
+from wtforms import StringField, SubmitField, TextAreaField, DateTimeField, PasswordField
+from wtforms.validators import Email, DataRequired, Length, EqualTo
 
 class MemberForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(min=2, max=120)])
@@ -15,3 +15,10 @@ class EventForm(FlaskForm):
     date = DateTimeField('Date', format='%Y-%m-%dT%H:%M:%S', validators=[DataRequired()])
     event_type = StringField('Event Type', validators=[Length(max=50)])
     submit = SubmitField('Submit')
+    
+
+class RegistrationForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(min=3, max=64)])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])

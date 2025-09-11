@@ -37,10 +37,12 @@ def create_app(config_class=Config):
     from app.members.routes import members_bp
     from app.events.routes import events_bp
     from app.core.routes import core_bp
+    from app.auth.routes import auth_bp
     
     app.register_blueprint(members_bp)
     app.register_blueprint(events_bp)
     app.register_blueprint(core_bp)
+    app.register_blueprint(auth_bp)
      
     # Start the scheduler
     if not scheduler.running:
