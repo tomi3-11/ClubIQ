@@ -13,4 +13,5 @@ class EventForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(min=2, max=140)])
     description = TextAreaField('Description', validators=[Length(max=500)])
     date = DateTimeField('Date', format='%Y-%m-%dT%H:%M:%S', validators=[DataRequired()])
+    event_type = StringField('Event Type', validators=[Length(max=50)])
     submit = SubmitField('Submit')

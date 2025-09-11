@@ -34,20 +34,14 @@ def create_app(config_class=Config):
     mail.init_app(app)
     
     # Register blueprints for modularity
-    from app.members.routes import members_bp, register_members_routes
-    from app.events.routes import events_bp, register_events_routes
+    from app.members.routes import members_bp
+    from app.events.routes import events_bp
     from app.core.routes import core_bp
     
     app.register_blueprint(members_bp)
     app.register_blueprint(events_bp)
     app.register_blueprint(core_bp)
-    
-    
-    # Register the routes with the global API object
-    # register_members_routes(api)
-    # register_events_routes(api)
-    
-    
+     
     # Start the scheduler
     if not scheduler.running:
         scheduler.init_app(app)

@@ -1,6 +1,6 @@
 from flask import request, Blueprint
 from flask_restful import Resource, Api
-from app.members import members_bp
+# from app.members import members_bp
 from app import api, db
 from app.models import Member
 from app.forms import MemberForm
@@ -87,7 +87,7 @@ class MemberListResource(Resource):
         }, 200
         
 # Add the resource to the API
-api.add_resource(MemberListResource, '/api/members')
-api.add_resource(MemberResource, '/api/members/<int:member_id>')
+api.add_resource(MemberListResource, '')
+api.add_resource(MemberResource, '/<int:member_id>')
 # api.add_resource(Me)
     

@@ -42,6 +42,7 @@ class Event(db.Model):
     # event_image = db.Column(db.Imaga)
     attendance_token = db.Column(db.String(32), nullable=True)
     token_expiry = db.Column(db.DateTime, nullable=True)
+    event_type = db.Column(db.String(50), default='meeting')
     
     # Explicitly define the unique constraint
     __table_args__ = (db.UniqueConstraint('attendance_token', name='uq_event_attendance_token'),)
@@ -64,3 +65,5 @@ class Project(db.Model):
     
     def __repr__(self):
         return f"<Project: {self.title}>"
+    
+    

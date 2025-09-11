@@ -8,3 +8,5 @@ Flask-APScheduler
 Flask-Mail
 Flask-Migrate
 python-dotenv
+pytz
+Werkzeug
