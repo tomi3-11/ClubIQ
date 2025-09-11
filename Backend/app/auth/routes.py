@@ -40,7 +40,28 @@ class RegisterResource(Resource):
         }, 201
         
         
-
+class LoginResouce(Resource):
+    def post(self):
+        data = request.get_json()
+        username = data.get('username')
+        password = data.get('password')
+        
+        if not username or not password:
+            return {
+                "message": "Username and password are required"
+            }, 400
+            
+        user = User.query.filter_by(username=username).first()
+        
+        if user and user.check_password(password):
+            return {
+                "message": "Logged in successfully"
+            }, 200
+        else:
+            return {
+                "message": "Invalid username or password"
+            }, 401
         
         
 api.add_resource(RegisterResource, '/register')
+api.add_resource(LoginResouce, '/login')
