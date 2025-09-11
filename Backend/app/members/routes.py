@@ -4,7 +4,7 @@ from flask_restful import Resource, Api
 from app import api, db
 from app.models import Member
 from app.forms import MemberForm
-
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 members_bp = Blueprint("members", __name__, url_prefix="/api/members")
 api = Api(members_bp)
@@ -56,6 +56,7 @@ class MemberResource(Resource):
         
 # Define a resource for a collection of members
 class MemberListResource(Resource):
+    @jwt_required()
     def get(self):
         members = Member.query.all()
         member_list = []
@@ -67,7 +68,7 @@ class MemberListResource(Resource):
                 "role": member.role,
                 "absence_count": member.absence_count,
                 "status": member.status,
-                "join_date": member.join_date,
+                "join_date": member.join_date.isoformat(),
             })
         return member_list, 200
     
