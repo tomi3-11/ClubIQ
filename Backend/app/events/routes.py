@@ -132,7 +132,7 @@ def register_events_routes(api):
             
             
     # Add the resource to the API
-    api.add_resource(EventListResource, '/events')
-    api.add_resource(EventResource, '/events/<int:event_id>')
-    api.add_resource(AttendanceResource, '/events/<int:event_id>/qr')
-    api.add_resource(AttendanceCheckResource, '/events/<int:event_id>/attend/<string:token>/<int:member_id>')
+    api.add_resource(EventListResource, '/api/events')
+    api.add_resource(EventResource, '/api/events/<int:event_id>')
+    api.add_resource(AttendanceResource, '/api/events/<int:event_id>/qr')
+    api.add_resource(AttendanceCheckResource, '/api/events/<int:event_id>/attend/<string:token>/<int:member_id>')
