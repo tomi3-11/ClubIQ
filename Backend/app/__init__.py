@@ -9,6 +9,7 @@ from config import Config
 from flask_migrate import Migrate
 import os
 from flask_jwt_extended import JWTManager
+# from app.models import User, Event, Member, Attendance, Project
 
 # Initialize extensions outside the factory
 db = SQLAlchemy()
@@ -54,6 +55,11 @@ def create_app(config_class=Config):
     if not scheduler.running:
         scheduler.init_app(app)
         scheduler.start()
+        
+    # # Shell context processor
+    # @app.shell_context_processor
+    # def make_shell_context():
+    #     return {"db": db, "User": User, "Event": Event, "Attendance": Attendance, "Project": Project}
     
     
     return app

@@ -4,7 +4,7 @@ from flask_restful import Resource, Api
 from app import api, db
 from app.models import Member
 from app.forms import MemberForm
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required
 
 members_bp = Blueprint("members", __name__, url_prefix="/api/members")
 api = Api(members_bp)

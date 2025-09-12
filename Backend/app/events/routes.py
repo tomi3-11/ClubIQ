@@ -7,6 +7,7 @@ from app.forms import EventForm
 import secrets
 from datetime import datetime, timezone, timedelta
 import pytz
+from flask_jwt_extended import jwt_required
 
 events_bp = Blueprint("events", __name__, url_prefix="/api/events")
 api = Api(events_bp)
@@ -50,6 +51,7 @@ class EventResource(Resource):
 
 # Define a resource for a collection of events
 class EventListResource(Resource):
+    @jwt_required()
     def get(self):
         events = Event.query.all()
         event_list = [
