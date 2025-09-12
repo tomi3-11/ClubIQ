@@ -39,6 +39,7 @@ def create_app(config_class=Config):
     csrf.init_app(app)
     mail.init_app(app)
     jwt.init_app(app)
+    scheduler.init_app(app)
     
     # Register blueprints for modularity
     from app.members.routes import members_bp
@@ -51,15 +52,25 @@ def create_app(config_class=Config):
     app.register_blueprint(core_bp)
     app.register_blueprint(auth_bp)
      
+    from app.tasks import send_event_notifications
     # Start the scheduler
     if not scheduler.running:
-        scheduler.init_app(app)
+        # scheduler.init_app(app)
         scheduler.start()
         
     # # Shell context processor
     # @app.shell_context_processor
     # def make_shell_context():
     #     return {"db": db, "User": User, "Event": Event, "Attendance": Attendance, "Project": Project}
+    
+    # Adding the scheduled job
+    scheduler.add_job(
+        id='send_event_notifications',
+        func=send_event_notifications,
+        trigger='interval',
+        hours=24,
+        replace_existing=True
+    )
     
     
     return app

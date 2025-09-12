@@ -16,6 +16,9 @@ class Config:
     # Secret key for sessions and CSRF protection
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'a-very-hard-to-guess-string'
     
+    # APScheduler Configuration
+    SCHEDULER_API_ENABLED = True
+    
     # Mail configuration
     MAIL_SERVER = os.environ.get('MAIL_SERVER')
     MAIL_PORT = int(os.environ.get('MAIL_PORT') or 587)

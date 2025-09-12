@@ -2,6 +2,7 @@ from app import scheduler, db, mail
 from app.models import Member, Event, Attendance
 from flask_mail import Message
 from datetime import datetime, timedelta
+from flask import current_app
 
 def send_absence_email(member):
     """
@@ -55,5 +56,52 @@ def check_absences():
                 member.absence_count = absent_count
                 db.session.commit()
                 send_absence_email(member)
+                
+
+def send_event_notifications():
+    print("Running scheduled event notification job...")
     
+    # We can access app, db, and mail via current_app
+    with current_app.app_context():
     
+        # Define a time frame (e.g., events in the next 3 days)
+        start_date = datetime.now()
+        end_date = start_date + timedelta(days=3)
+        
+        upcoming_events = Event.query.filter(
+            Event.date >= start_date,
+            Event.date <= end_date
+        ).all()
+        
+        if not upcoming_events:
+            print("No upcoming events found.")
+            return
+        
+        all_members = Member.query.all()
+        if not all_members:
+            print("No members to notify.")
+            return
+        
+        # Build the email body
+        event_list_body = "\n".join([f"- {e.name} on {e.date.strftime('%Y-%m-%d at %H:%M')}" for e in upcoming_events])
+        email_body = f"""Hello,
+        
+        Here are the upcoming events for this week:
+        
+        {event_list_body}
+        
+        See you there!
+        """
+        
+        recipients = [member.email for member in all_members]
+        
+        msg = Message(
+            'Upcoming Events Notification', 
+            sender=('Club Tracker', 'noreply@clubiq.com'),
+            recipients=recipients,
+            body=email_body
+        )
+        
+        mail.send(msg)
+        print(f"Sent event notifications to {len(recipients)} members.")
+        
