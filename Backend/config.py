@@ -1,8 +1,6 @@
 import os
 
 class Config:
-    # Database configurations
-        
     # Using SQLite for local development
     if os.environ.get('DATABASE_URL'):
         SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
@@ -12,6 +10,9 @@ class Config:
         SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')    
     
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    
+    JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "my-secret-super_key-that-i-should-consider-changing-😁")
+
     
     # Secret key for sessions and CSRF protection
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'a-very-hard-to-guess-string'

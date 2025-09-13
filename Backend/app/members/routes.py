@@ -1,13 +1,15 @@
 from flask import request, Blueprint
 from flask_restful import Resource, Api
 # from app.members import members_bp
-from app import api, db
+from app import api, db, csrf
 from app.models import Member
 from app.forms import MemberForm
 from flask_jwt_extended import jwt_required
 
 members_bp = Blueprint("members", __name__, url_prefix="/api/members")
 api = Api(members_bp)
+
+csrf.exempt(members_bp)
 
 # Define a resource for a single member
 class MemberResource(Resource):
@@ -25,9 +27,6 @@ class MemberResource(Resource):
         
     
     def put(self, member_id):
-        # NOTE: In a real app, you would parse the request JSON
-        # and validate against the form
-        
         data = request.get_json()
         form = MemberForm()
         if not form.validate_on_submit():
@@ -73,14 +72,23 @@ class MemberListResource(Resource):
         return member_list, 200
     
     def post(self):
-        form = MemberForm()
-        if not form.validate_on_submit():
-            return form.errors, 400
+        data = request.get_json()
+        if not data:
+            return {"error": "Missing JSON body"}, 400
+        
+        # Basic validation
+        required_fields = ["name", "email", "role"]
+        
+        for field in required_fields:
+            if field not in data or not data[field]:
+                return {
+                    "error": f"Missing field: {field}"
+                }, 400
         
         new_member = Member(
-            name=form.name.data,
-            email=form.email.data,
-            role=form.role.data
+            name=data["name"],
+            email=data["email"],
+            role=data["role"]
         )  
         db.session.add(new_member)
         db.session.commit()

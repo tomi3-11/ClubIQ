@@ -27,9 +27,6 @@ def create_app(config_class=Config):
         app.config.from_object(os.environ.get('FLASK_CONFIG_TYPE', 'default'))
     else:
         app.config.from_object(config_class)
-        
-    # Set the secret key for JWTs
-    app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY", "my-secret-super_key-that-i-should-consider-changing-😁")
     
     # Initialize extensions with the app instance
     db.init_app(app)
