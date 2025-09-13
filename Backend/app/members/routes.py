@@ -2,7 +2,7 @@ from flask import request, Blueprint
 from flask_restful import Resource, Api
 # from app.members import members_bp
 from app import api, db, csrf
-from app.models import Member
+from app.models import Member, User
 from app.forms import MemberForm
 from flask_jwt_extended import jwt_required
 
@@ -25,22 +25,27 @@ class MemberResource(Resource):
             "join_date": member.join_date.isoformat(),
         }, 200
         
-    
+    @jwt_required()
     def put(self, member_id):
+        member = User.query.get_or_404(member_id)
         data = request.get_json()
-        form = MemberForm()
-        if not form.validate_on_submit():
-            return form.errors, 400
         
-        
-        member = Member.query.get_or_404(member_id)
-        member.name = form.name.data
-        member.email = form.email.data
-        member.role = form.role.data
+        # Update fields if they are in the request
+        if 'name' in data:
+            member.name = data['name']
+        if 'email' in data:
+            member.email = data['email']
+        if 'role' in data:
+            member.role = data['role']
+            
         db.session.commit()
         
         return {
-            "message": "Member updated successfully"
+            "message": "Member updated successfully",
+            "id": member.id,
+            "name": member.name,
+            "email": member.email,
+            "role": member.role,
         }, 200
         
         
