@@ -1,6 +1,6 @@
 from flask import Blueprint, request
 from flask_restful import Resource, Api
-from app import db, api
+from app import db, api, csrf
 from app.models import User
 from app.forms import RegistrationForm
 from flask_jwt_extended import create_access_token
@@ -10,9 +10,12 @@ from datetime import datetime, timezone, timedelta
 import secrets
 from werkzeug.security import generate_password_hash
 import pytz
+# from app import csrf
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api')
 api = Api(auth_bp)
+
+csrf.exempt(auth_bp)
 
 class RegisterResource(Resource):
     def post(self):
@@ -47,18 +50,18 @@ class RegisterResource(Resource):
         }, 201
         
         
-class LoginResouce(Resource):
+class LoginResource(Resource):
     def post(self):
         data = request.get_json()
-        username = data.get('username')
+        email = data.get('email')
         password = data.get('password')
         
-        if not username or not password:
+        if not email or not password:
             return {
                 "message": "Username and password are required"
             }, 400
             
-        user = User.query.filter_by(username=username).first()
+        user = User.query.filter_by(email=email).first()
         
         if user and user.check_password(password):
             access_token = create_access_token(identity=str(user.id)) # Create a jwt
@@ -71,7 +74,7 @@ class LoginResouce(Resource):
             }, 401
             
             
-class PasswordResetRequestResource(Resource):
+class PasswordResetRequestResource(Resource): 
     def post(self):
         data = request.get_json()
         email = data.get('email')
@@ -130,6 +133,6 @@ class PasswordResetResource(Resource):
         
         
 api.add_resource(RegisterResource, '/register')
-api.add_resource(LoginResouce, '/login')
+api.add_resource(LoginResource, '/login')
 api.add_resource(PasswordResetRequestResource, '/reset_request')
 api.add_resource(PasswordResetResource, '/reset_password/<string:token>')
