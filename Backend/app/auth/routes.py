@@ -64,7 +64,8 @@ class LoginResource(Resource):
         user = User.query.filter_by(email=email).first()
         
         if user and user.check_password(password):
-            access_token = create_access_token(identity=str(user.id)) # Create a jwt
+            additoinal_claim = {"role": user.role}
+            access_token = create_access_token(identity=str(user.id), additional_claims=additoinal_claim) # Create a jwt
             return {
                 "message": "Logged in successfully", "access_token": access_token
             }, 200
