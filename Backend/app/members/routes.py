@@ -5,6 +5,7 @@ from app import api, db, csrf
 from app.models import Member, User
 from app.forms import MemberForm
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from functools import wraps
 
 members_bp = Blueprint("members", __name__, url_prefix="/api/members")
 api = Api(members_bp)
@@ -12,13 +13,25 @@ api = Api(members_bp)
 csrf.exempt(members_bp)
 
 
-# def requires_roles(*role):
-#     def wrapper(fn):
-#         @jwt_required
-#         def decorator(*args, **kwargs)
+def requires_roles(*role):
+    def wrapper(fn):
+        @wraps(fn)
+        @jwt_required()
+        def decorator(*args, **kwargs):
+            user_email = get_jwt_identity()
+            user = User.query.filter_by(email=user_email).first()
+            
+            if not user or user.role not in roles:
+                return {
+                    "message": "Access forbidden: Insufficicent permissions"
+                }, 403
+            return fn(*args, **kwargs)
+        return decorator
+    return wrapper
 
 # Define a resource for a single member
 class MemberResource(Resource):
+    @jwt_required()
     def get(self, member_id):
         member = Member.query.get_or_404(member_id)
         return {
@@ -31,7 +44,7 @@ class MemberResource(Resource):
             "join_date": member.join_date.isoformat(),
         }, 200
         
-    @jwt_required()
+    @requires_roles('admin')
     def put(self, member_id):
         member = Member.query.get_or_404(member_id)
         data = request.get_json()
@@ -54,7 +67,7 @@ class MemberResource(Resource):
             "role": member.role,
         }, 200
         
-        
+    @requires_roles('admin')
     def delete(self, member_id):
         member = Member.query.get_or_404(member_id)
         db.session.delete(member)
@@ -82,6 +95,7 @@ class MemberListResource(Resource):
             })
         return member_list, 200
     
+    @requires_roles('admin')
     def post(self):
         data = request.get_json()
         if not data:
