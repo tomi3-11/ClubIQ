@@ -13,15 +13,24 @@ api = Api(members_bp)
 csrf.exempt(members_bp)
 
 
-def requires_roles(*role):
+def requires_roles(*roles):
     def wrapper(fn):
         @wraps(fn)
         @jwt_required()
         def decorator(*args, **kwargs):
-            user_email = get_jwt_identity()
-            user = User.query.filter_by(email=user_email).first()
+            user_id = get_jwt_identity()
+            print("JWT identity:", user_id)
             
-            if not user or user.role not in roles:
+            user = User.query.get(user_id)
+            print("User Found:", user)
+            
+            if not user:
+                return {"message": "User not found"}, 404
+            
+            if user.role == 'super_user':
+                return fn(*args, **kwargs)
+            
+            if user.role not in roles:
                 return {
                     "message": "Access forbidden: Insufficicent permissions"
                 }, 403
