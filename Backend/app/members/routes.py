@@ -4,12 +4,18 @@ from flask_restful import Resource, Api
 from app import api, db, csrf
 from app.models import Member, User
 from app.forms import MemberForm
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 members_bp = Blueprint("members", __name__, url_prefix="/api/members")
 api = Api(members_bp)
 
 csrf.exempt(members_bp)
+
+
+# def requires_roles(*role):
+#     def wrapper(fn):
+#         @jwt_required
+#         def decorator(*args, **kwargs)
 
 # Define a resource for a single member
 class MemberResource(Resource):
@@ -27,7 +33,7 @@ class MemberResource(Resource):
         
     @jwt_required()
     def put(self, member_id):
-        member = User.query.get_or_404(member_id)
+        member = Member.query.get_or_404(member_id)
         data = request.get_json()
         
         # Update fields if they are in the request
