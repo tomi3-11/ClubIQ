@@ -95,11 +95,14 @@ class PasswordResetRequestResource(Resource):
             user.token_expiry = datetime.now(timezone.utc) + timedelta(hours=1)
             db.session.commit()
             
+            frontend_url = "http://localhost:5173" # React app url
+            
             msg = Message('Password Reset request',
                           sender=('Club IQ', 'noreply@clubiq.com'),
                           recipients=[user.email])
             
-            msg.body = f"""To reset your password, visit the following link: {request.url_root}reset_password/{token}
+            msg.body = f"""
+            To reset your password, visit the following link: {frontend_url}/reset_password/{token}
             If you did not make this request then simply ignore this email and no changes will be made
             """
             
