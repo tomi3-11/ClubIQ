@@ -3,7 +3,7 @@ import axios from 'axios';
 import MemberEditForm from './MemberEditForm';
 
 
-function MemberList({ onListUpdated }) {
+function MemberList({ onListUpdated, isAdmin }) {
   const [members, setMembers] = useState([]);
   const [message, setMessage] = useState('');
   const [editingMember, setEditingMember] = useState(null);
@@ -67,16 +67,21 @@ function MemberList({ onListUpdated }) {
           members.map(member => (
             <li key={member.id}>
                 {member.name} ({member.email}) - {member.role}
-                <button onClick={() => handleEdit(member)}>Edit</button>
-                <button onClick={() => handleDelete(member.id)}>Delete</button>
-            </li>
+                {isAdmin && (
+                    <>
+                        <button onClick={() => handleEdit(member)}>Edit</button>
+                        <button onClick={() => handleDelete(member.id)}>Delete</button>
+                    </>
+
+                )}
+        </li>
           ))
         ) : (
           <p>No members found.</p>
         )}
       </ul>
 
-      {editingMember && (
+      {editingMember && isAdmin && (
         <MemberEditForm
             member={editingMember}
             onMemberUpdated={handleMemberUpdated}

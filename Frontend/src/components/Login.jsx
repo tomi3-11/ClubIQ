@@ -1,13 +1,15 @@
 import axios from "axios";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../AuthContext";
+import { Link, useNavigate } from 'react-router-dom';
 
 
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
-    const { login } = useContext(AuthContext);
+    const { login, isAthenticated } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -21,15 +23,29 @@ function Login() {
 
             // backend sends a token
             const token = response.data.access_token;
+
             login(token);
             localStorage.setItem('access_token', token); // store the token
+
             setMessage('Login successful!');
             console.log('Login successful, token stored!')
+            // Redirect 
+            // setTimeout(() => {
+            //     navigate('/dashboard');
+            // }, 1000)
+            navigate('/dashboard');
         } catch (error) {
-            setMessage(error.response.data.message || 'Login failed');
+            setMessage(error.response?.data?.message || 'Login failed');
             console.log('Login error:', error.response.data);
         }
     };
+
+
+    useEffect(() => {
+        if (isAthenticated) {
+            navigate('/dashboard');
+        }
+    }, [isAthenticated, navigate]);
 
     return (
         <div>
@@ -57,9 +73,18 @@ function Login() {
 
                 <button type="submit">Login</button>
             </form>
+
+            <div>
+                <Link to="/forgot_password">Forgot Password</Link>
+            </div>
+
+            <div style={{ marginTop: '10px'}}>
+                Don't have an account? <Link to={"/register"}>Register here.</Link>
+            </div>
+
             {message && <p>{message}</p>}
         </div>
-    )
+    );
 }
 
 export default Login;

@@ -55,6 +55,7 @@ function MemberForm({ onMemberAdded }) {
                     <select value={role} onChange={(e) => setRole(e.target.value)}>
                         <option value="member">Member</option>
                         <option value="Admin">Admin</option>
+                        {/* <option value="super_user">Super User</option> */}
                     </select>
                 </div>
 

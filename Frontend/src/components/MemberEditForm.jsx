@@ -50,6 +50,8 @@ function MemberEditForm({ member, onMemberUpdated, onCancel }) {
                     <select value={role} onChange={(e) => setRole(e.target.value)}>
                         <option value="member">Member</option>
                         <option value="admin">Admin</option>
+                        {/* <option value="super_user">Super User</option> */}
+
                     </select>
                 </div>
                 <button type="submit">Update Member</button>
