@@ -23,6 +23,7 @@ class RegisterResource(Resource):
         form = RegistrationForm(data=data)
         
         if not form.validate():
+            print(form.errors)
             return form.errors, 400
         
         # Check for existing username or email

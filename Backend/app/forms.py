@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextAreaField, DateTimeField, PasswordField
 from wtforms.validators import Email, DataRequired, Length, EqualTo
+from app import csrf
 
 class MemberForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(min=2, max=120)])
@@ -18,6 +19,9 @@ class EventForm(FlaskForm):
     
 
 class RegistrationForm(FlaskForm):
+    class Meta:
+        csrf = False
+        
     username = StringField('Username', validators=[DataRequired(), Length(min=3, max=64)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])
