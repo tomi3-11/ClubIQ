@@ -15,3 +15,5 @@ sqlite3.db
 .db
 migrations
 instance
+
+.pytest_cache
