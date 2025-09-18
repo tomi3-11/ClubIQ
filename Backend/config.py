@@ -27,4 +27,10 @@ class Config:
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     
+class TestingConfig(Config):
+    Testing = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:' # in-memory SQLite for testing
+    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY', "my-secret-super_key-that-i-should-consider-changing-😁")
+    WTF_CSRF_ENABLED = False # This disables CSRF For Testing
+    
     
