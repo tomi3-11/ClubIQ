@@ -221,7 +221,7 @@ git commit -m "Added feature"
 git push origin feature-name
 ```
 
-#### 6. Open a pull request
+#### 6. Open a pull request on GitHub
 
 ### Visual Contribution Work flow
 <p align="center">
