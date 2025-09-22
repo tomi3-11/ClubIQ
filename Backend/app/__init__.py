@@ -54,11 +54,6 @@ def create_app(config_class=Config):
     if not scheduler.running:
         # scheduler.init_app(app)
         scheduler.start()
-        
-    # # Shell context processor
-    # @app.shell_context_processor
-    # def make_shell_context():
-    #     return {"db": db, "User": User, "Event": Event, "Attendance": Attendance, "Project": Project}
     
     # Adding the scheduled job
     scheduler.add_job(
