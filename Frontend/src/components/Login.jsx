@@ -29,10 +29,6 @@ function Login() {
 
             setMessage('Login successful!');
             console.log('Login successful, token stored!')
-            // Redirect 
-            // setTimeout(() => {
-            //     navigate('/dashboard');
-            // }, 1000)
             navigate('/dashboard');
         } catch (error) {
             setMessage(error.response?.data?.message || 'Login failed');
