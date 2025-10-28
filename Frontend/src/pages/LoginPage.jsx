@@ -1,21 +1,46 @@
 "use client"
 
-import { useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import "../styles/auth.css"
+import { AuthContext, useAuthContext } from "../AuthContext"
 
 export default function LoginPage({ onLogin }) {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const { login, isAuthenticated } = useAuthContext();
 
-  const handleLogin = (e, role) => {
-    e.preventDefault()
-    if (email && password) {
-      onLogin(role)
-      navigate(role === "admin" ? "/admin-dashboard" : "/member-dashboard")
-    }
-  }
+      useEffect(() => {
+        if (isAuthenticated) {
+            navigate('/dashboard');
+        }
+    }, [isAuthenticated, navigate]);
+
+   const handleLogin = async (e) => {
+        e.preventDefault();
+        // console.log('Attempting to log in with:', email, password);
+
+        try {
+            const response = await axios.post('/api/login', {
+                email,
+                password
+            });
+
+            // backend sends a token
+            const token = response.data.access_token;
+
+            login(token);
+            localStorage.setItem('access_token', token); // store the token
+
+            setMessage('Login successful!');
+            console.log('Login successful, token stored!')
+            navigate('/dashboard');
+        } catch (error) {
+            setMessage(error.response?.data?.message || 'Login failed');
+            console.log('Login error:', error.response.data);
+        }
+      }
 
   return (
     <div className="auth-container">

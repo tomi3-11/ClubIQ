@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 
 export const AuthContext = createContext();
 
@@ -21,3 +21,10 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+
+export const useAuthContext = () => {
+  const ctx = useContext(AuthContext);
+    if(!ctx) throw new Error('useContext can only be called form a functional component');
+  return ctx;
+
+}
