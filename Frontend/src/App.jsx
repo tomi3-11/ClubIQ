@@ -1,43 +1,56 @@
-import React, { useContext } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
-import Login from './components/Login';
-import Dashboard from './components/Dashboard';
-import { AuthContext, AuthProvider } from './AuthContext';
-import ForgotPasswordForm from './components/ForgotPasswordForm';
-import ResetPasswordForm from './components/ResetPasswordForm';
-import Register from './components/Register';
+"use client"
 
-const PrivateRoute = ({ children }) => {
-  const { isAuthenticated } = useContext(AuthContext);
-  return isAuthenticated ? children : <Navigate to="/" />
-};
+import { useState } from "react"
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
+import LoginPage from "./pages/LoginPage"
+import RegisterPage from "./pages/RegisterPage"
+import MemberDashboard from "./pages/MemberDashboard"
+import AdminDashboard from "./pages/AdminDashboard"
+import "./App.css"
 
 function App() {
-  // const { isLoggedIn } = useContext(AuthContext);
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [userRole, setUserRole] = useState(null)
+
+  const handleLogin = (role) => {
+    setIsAuthenticated(true)
+    setUserRole(role)
+  }
+
+  const handleLogout = () => {
+    setIsAuthenticated(false)
+    setUserRole(null)
+  }
 
   return (
-    <AuthProvider>
-      <Router>
-        <div className='App'>
-          <h1>Club IQ</h1>
-          <Routes>
-            {/* {isLoggedIn ? <Dashboard /> : <Login />}   */}
-            <Route path="/" element={<Home />} />
-            <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-            <Route path="/forgot_password" element={<ForgotPasswordForm />} />
-            <Route path="/reset_password/:token" element={<ResetPasswordForm />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login />} />
-          </Routes>
-        </div>
-      </Router>
-    </AuthProvider>
-  );
+    <Router>
+      <Routes>
+        <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+        <Route path="/register" element={<RegisterPage onLogin={handleLogin} />} />
+        <Route
+          path="/member-dashboard"
+          element={
+            isAuthenticated && userRole === "member" ? (
+              <MemberDashboard onLogout={handleLogout} />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+        <Route
+          path="/admin-dashboard"
+          element={
+            isAuthenticated && userRole === "admin" ? (
+              <AdminDashboard onLogout={handleLogout} />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+        <Route path="/" element={<Navigate to="/login" />} />
+      </Routes>
+    </Router>
+  )
 }
 
-const Home = () => {
-  const { isAuthenticated } = useContext(AuthContext);
-  return isAuthenticated ? <Navigate to="/dashboard" /> : <Login />;
-};
-
-export default App;
+export default App
