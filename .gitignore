@@ -17,3 +17,5 @@ migrations
 instance
 
 .pytest_cache
+node_modules/
+.next/
