@@ -1,15 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import "../../styles/dashboard.css";
+import "../../../styles/dashboard.css";
 import Sidebar from "@/components/Sidebar";
 import ActivityCard from "@/components/ActivityCard";
 import RatingCard from "@/components/RatingCard";
+import { useUser } from "@clerk/nextjs";
+import useSignOut from "@/hooks/useSignOut";
 
 export default function MemberDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
+  const { user } = useUser();
 
-  const handleLogout = () => {};
+  const { handleSignOut } = useSignOut();
 
   const activities = [
     {
@@ -45,15 +48,15 @@ export default function MemberDashboard() {
 
   return (
     <div className='dashboard-container'>
-      <Sidebar role='member' onLogout={handleLogout} />
+      <Sidebar role='member' onLogout={handleSignOut} />
 
       <main className='dashboard-main'>
         <header className='dashboard-header'>
           <div className='header-content'>
-            <h1>Welcome, Alice!</h1>
+            <h1>Welcome, {user?.firstName}!</h1>
             <p>Track your activities and performance</p>
           </div>
-          <button className='btn btn-outline' onClick={handleLogout}>
+          <button className='btn btn-outline' onClick={handleSignOut}>
             Logout
           </button>
         </header>

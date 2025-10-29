@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@clerk/backend": "^2.19.1",
     "@clerk/nextjs": "^6.34.0",
     "chance": "^1.1.13",
     "lucide-react": "^0.548.0",

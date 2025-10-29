@@ -8,6 +8,7 @@ import { Loader2 } from "lucide-react";
 import Logo from "@/components//reusables/Logo";
 import BetterInput from "@/components/reusables/BetterInput/BetterInput";
 import Image from "next/image";
+import { setRole } from "@/DAL/authServiceImpl";
 
 export default function Page() {
   const [username, setUsername] = useState("");
@@ -17,6 +18,7 @@ export default function Page() {
   const { user, isSignedIn } = useUser();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [shouldSetRole, setShouldSetRole] = useState(false);
 
   // useEffect(() => {
   //   if (isSignedIn) {
@@ -25,6 +27,21 @@ export default function Page() {
   //     router.replace("/auth/sign-in");
   //   }
   // }, [signUp, router, signIn, user]);
+
+  useEffect(() => {
+    if (user && shouldSetRole) {
+      const addUserRole = async () => {
+        try {
+          await setRole(user.id, "user");
+          window.location.href = `${window.location.origin}/sso`;
+        } catch (error) {
+          console.error("Error setting user role:", error);
+        }
+      };
+
+      addUserRole();
+    }
+  }, [user, shouldSetRole]);
 
   const handleContinue = async () => {
     if (!signIn || !signUp) return;
@@ -52,8 +69,7 @@ export default function Page() {
           });
         }
       }
-
-      window.location.href = `${window.location.origin}/`;
+      setShouldSetRole(true);
     } catch (err: any) {
       setIsLoading(false);
       console.error("Error completing sign-up:", err);

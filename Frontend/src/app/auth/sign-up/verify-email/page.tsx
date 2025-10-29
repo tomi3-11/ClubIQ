@@ -4,8 +4,7 @@ import { useSignIn, useSignUp, useUser } from "@clerk/nextjs";
 import { customToast } from "@/utils/utilities";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
-import Logo from "@/components/reusables/Logo";
-import Image from "next/image";
+import { setRole } from "@/DAL/authServiceImpl";
 
 export default function Page() {
   const [otpInputs, setOtpInputs] = useState(new Array(6).fill(""));
@@ -17,6 +16,7 @@ export default function Page() {
   const { signIn } = useSignIn();
   const firstInputRef = useRef<HTMLInputElement>(null); // Fixed: Properly typed ref
   const [loading, setIsLoading] = useState(false);
+  const [shouldSetRole, setShouldSetRole] = useState(false);
 
   // useEffect(() => {
   //   if (isSignedIn) {
@@ -42,6 +42,21 @@ export default function Page() {
     }
   }, [code]);
 
+  useEffect(() => {
+    if (user && shouldSetRole) {
+      const addUserRole = async () => {
+        try {
+          await setRole(user.id, "user");
+          window.location.href = `${window.location.origin}/sso`;
+        } catch (error) {
+          console.error("Error setting user role:", error);
+        }
+      };
+
+      addUserRole();
+    }
+  }, [user, shouldSetRole]);
+
   const handleVerification = async () => {
     const code = otpInputs.join("");
     setIsLoading(true);
@@ -53,7 +68,8 @@ export default function Page() {
     }
     try {
       await signUp?.attemptEmailAddressVerification({ code });
-      window.location.href = `${window.location.origin}/`;
+      setShouldSetRole(true);
+
       customToast("Email verified! Welcome.", "success");
     } catch (err: any) {
       setError(

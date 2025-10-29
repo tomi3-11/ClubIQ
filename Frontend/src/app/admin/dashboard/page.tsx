@@ -2,21 +2,22 @@
 
 import { useState } from "react";
 
-import "../../styles/dashboard.css";
+import "../../../styles/dashboard.css";
 import Sidebar from "@/components/Sidebar";
 import MemberManagement from "@/components/admin/MemberManagement";
 import ActivityManagement from "@/components/admin/ActivityManagement";
 import RatingPanel from "@/components/admin/RatingPanel";
 import ReportsAnalytics from "@/components/admin/ReportsAnalytics";
+import useSignOut from "@/hooks/useSignOut";
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
 
-  const handleLogout = () => {};
+  const { handleSignOut } = useSignOut();
 
   return (
     <div className='dashboard-container'>
-      <Sidebar role='admin' onLogout={handleLogout} />
+      <Sidebar role='admin' onLogout={handleSignOut} />
 
       <main className='dashboard-main'>
         <header className='dashboard-header'>
@@ -24,7 +25,7 @@ export default function AdminDashboard() {
             <h1>Admin Dashboard</h1>
             <p>Manage clubs, members, and activities</p>
           </div>
-          <button className='btn btn-outline' onClick={handleLogout}>
+          <button className='btn btn-outline' onClick={handleSignOut}>
             Logout
           </button>
         </header>

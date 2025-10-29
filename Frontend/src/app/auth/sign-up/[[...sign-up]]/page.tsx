@@ -46,7 +46,7 @@ export default function Page() {
     customToast("Creating Account", "creating");
     const url = window.location.origin;
     const redirectUrl = `${url}/auth/sign-up/continue`;
-    const redirectUrlComplete = `${url}/`;
+    const redirectUrlComplete = `${url}/sso`;
     try {
       await signIn?.authenticateWithRedirect({
         strategy, // Dynamically set the OAuth strategy

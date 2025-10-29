@@ -8,7 +8,6 @@ import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 
 export default function Page() {
   const [error, setError] = useState("");
@@ -41,7 +40,7 @@ export default function Page() {
     customToast("Signing In", "creating");
     const url = window.location.origin;
     const redirectUrl = `${url}/auth/sign-up/continue`;
-    const redirectUrlComplete = `${url}/`;
+    const redirectUrlComplete = `${url}/sso`;
     try {
       await signIn?.authenticateWithRedirect({
         strategy, // Dynamically set the OAuth strategy
@@ -101,7 +100,6 @@ export default function Page() {
   return (
     <div className='min-h-screen flex items-center justify-center bg-[var(--bg-secondary)] text-[var(--text-primary)]'>
       <div className='bg-[var(--bg-primary)] shadow-lg rounded-2xl w-full max-w-md p-8 sm:p-10 space-y-6'>
-        {/* Header */}
         <div className='flex flex-col items-center space-y-2 text-center'>
           <h1 className='text-2xl font-semibold '>Login</h1>
           <p className='text-sm text-[var(--text-secondary)]'>
@@ -115,7 +113,6 @@ export default function Page() {
           </p>
         </div>
 
-        {/* OAuth */}
         <div className='flex flex-col gap-3'>
           <button
             onClick={() => handleOAuthSignIn("oauth_google")}
@@ -130,7 +127,6 @@ export default function Page() {
           </button>
         </div>
 
-        {/* Separator */}
         <div className='flex items-center gap-3'>
           <span className='h-px bg-[var(--border)] flex-1'></span>
           <span className='text-xs text-[var(--text-secondary)] uppercase'>
