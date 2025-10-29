@@ -1,0 +1,13 @@
+
+
+.continue-flow-re button.typical-tnp-button.loading{
+    background-color: rgba(128, 128, 128, 0.139);
+}
+
+.continue-flow-re button.typical-tnp-button.active{
+    opacity: 1;
+}
+
+.continue-flow-re button.typical-tnp-button .loader{
+    transform: scale(.5) translateY(4px);
+}
