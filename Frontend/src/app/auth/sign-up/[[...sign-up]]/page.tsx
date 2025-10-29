@@ -1,5 +1,4 @@
 "use client";
-import "../../page.css";
 import Link from "next/link";
 import { useSignIn, useSignUp, useUser } from "@clerk/nextjs";
 import { GoogleSvg } from "@/assets/icons";
@@ -35,10 +34,10 @@ export default function Page() {
     }
   }, [password]);
 
-  if (isSignedIn) {
-    router.replace("/member-dashboard");
-    return;
-  }
+  // if (isSignedIn) {
+  //   router.replace("/");
+  //   return;
+  // }
 
   const handleOAuthSignUp = async (
     strategy: "oauth_google" | "oauth_facebook" | "oauth_apple"
@@ -47,7 +46,7 @@ export default function Page() {
     customToast("Creating Account", "creating");
     const url = window.location.origin;
     const redirectUrl = `${url}/auth/sign-up/continue`;
-    const redirectUrlComplete = `${url}/member-dashboard`;
+    const redirectUrlComplete = `${url}/`;
     try {
       await signIn?.authenticateWithRedirect({
         strategy, // Dynamically set the OAuth strategy
@@ -124,67 +123,78 @@ export default function Page() {
   };
 
   return (
-    <div className='auth-flow register'>
-      <div className='inner-card'>
-        <div className='auth-left'>
-          <Image
-            src={"/images/collage_all.jpg"}
-            width={1920}
-            height={1080}
-            alt='collage of movies'
-          />
+    <div className='min-h-screen flex items-center justify-center bg-[var(--bg-secondary)] text-[var(--text-primary)]'>
+      <div className='bg-[var(--bg-primary)] shadow-lg rounded-2xl w-full max-w-md p-8 sm:p-10 space-y-6'>
+        <div className='flex flex-col items-center space-y-2'>
+          <h1 className='text-2xl font-semibold'>Create an Account</h1>
+          <p className='text-sm text-[var(--text-secondary)]'>
+            Already have an account?{" "}
+            <Link
+              href='/auth/sign-in'
+              className='text-[var(--primary)] hover:text-[var(--primary-dark)] font-medium transition-colors'
+            >
+              Login
+            </Link>
+          </p>
         </div>
-        <div className='auth-right'>
-          <div className='rs-inner'>
-            <Logo />
-            <h1>Create An Account</h1>
-            <p className='has-account center-text'>
-              Already have an account?
-              <Link href={"/auth/sign-in"}>
-                <span> Login</span>
-              </Link>
-            </p>
-            <div className='socials-options'>
+
+        {/* Social Signup */}
+        <div className='flex flex-col gap-3'>
+          <button
+            onClick={() => handleOAuthSignUp("oauth_google")}
+            className='w-full flex items-center justify-center gap-3 border border-[var(--border)] py-2.5 rounded-lg hover:bg-[var(--bg-tertiary)] transition-all'
+          >
+            {loading ? (
+              <Loader2 className='animate-spin w-5 h-5 text-[var(--primary)]' />
+            ) : (
+              <GoogleSvg />
+            )}
+            <span className='font-medium'>Continue with Google</span>
+          </button>
+        </div>
+
+        {/* Separator */}
+        <div className='flex items-center gap-3'>
+          <span className='h-px bg-[var(--border)] flex-1'></span>
+          <span className='text-xs text-[var(--text-secondary)] uppercase'>
+            or
+          </span>
+          <span className='h-px bg-[var(--border)] flex-1'></span>
+        </div>
+
+        {/* Form */}
+        <div className='space-y-4'>
+          {error && (
+            <p className='text-[var(--danger)] text-sm text-center'>{error}</p>
+          )}
+          <form onSubmit={handleSubmit} className='space-y-4'>
+            <BetterInput
+              name='email'
+              placeholder='Email address'
+              value={email}
+              onchange={setEmail}
+              type='email'
+            />
+            <BetterInput
+              name='password'
+              placeholder='Password'
+              value={password}
+              onchange={setPassword}
+              type='password'
+            />
+            <div>
               <button
-                onClick={() => handleOAuthSignUp("oauth_google")}
-                className='btn btn-google'
+                type='submit'
+                className='w-full bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white py-2.5 rounded-lg font-medium shadow-md hover:shadow-lg transition-all'
               >
-                {loading ? (
-                  <Loader2 className='loading-spinner' />
-                ) : (
-                  <GoogleSvg />
-                )}
-                <span>Continue with Google</span>
+                Sign Up
               </button>
             </div>
-            <span className='span-separator'>or</span>
-            <div className='form-container'>
-              <p className='error-message'>{error}</p>
-              <form onSubmit={handleSubmit}>
-                <BetterInput
-                  name='email'
-                  placeholder='Email address'
-                  value={email}
-                  onchange={setEmail}
-                  type='email'
-                />
-                <BetterInput
-                  name='password'
-                  placeholder='Password'
-                  value={password}
-                  onchange={setPassword}
-                  type='password'
-                />
-                <div className='btn-container'>
-                  <button type='submit' className='continue auth-flow-btn'>
-                    Sign Up
-                  </button>
-                </div>
-              </form>
-            </div>
-            <div id='clerk-captcha' />
-          </div>
+          </form>
         </div>
+
+        {/* Captcha */}
+        <div id='clerk-captcha' className='pt-2' />
       </div>
     </div>
   );

@@ -1,6 +1,4 @@
 "use client";
-import "../page.css";
-import "./style.css";
 import React, { useEffect, useRef, useState } from "react";
 import { useAuth, useSignIn } from "@clerk/nextjs";
 import type { NextPage } from "next";

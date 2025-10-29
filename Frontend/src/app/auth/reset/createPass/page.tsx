@@ -1,7 +1,6 @@
 "use client";
 
 import { validatePassword } from "@/utils/utilities";
-import "../style.css";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -49,12 +48,27 @@ export default function CreatePass() {
 
           <form onSubmit={handleSubmit} className='create-pass-form'>
             <div className='input-container'>
-              <input name='pass' className='typical-tnp-input' type='password' id='' placeholder='Password' />
-              <span className={`error-text ${error ? "show" : ""}`}>{error}</span>
+              <input
+                name='pass'
+                className='typical-tnp-input'
+                type='password'
+                id=''
+                placeholder='Password'
+              />
+              <span className={`error-text ${error ? "show" : ""}`}>
+                {error}
+              </span>
             </div>
             <div className='input-container'>
-              <input name='cpass' className='typical-tnp-input' type='password' placeholder='Confirm password' />
-              <span className={`error-text ${cpassError ? "show" : ""}`}>{cpassError}</span>
+              <input
+                name='cpass'
+                className='typical-tnp-input'
+                type='password'
+                placeholder='Confirm password'
+              />
+              <span className={`error-text ${cpassError ? "show" : ""}`}>
+                {cpassError}
+              </span>
             </div>
 
             <button type='submit' className='typical-tnp-button reset-flow-btn'>

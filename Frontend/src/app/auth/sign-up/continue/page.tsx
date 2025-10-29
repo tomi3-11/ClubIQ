@@ -18,13 +18,13 @@ export default function Page() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    if (isSignedIn) {
-      router.replace("/me");
-    } else if (signIn && signIn?.status !== "needs_identifier") {
-      router.replace("/auth/sign-in");
-    }
-  }, [signUp, router, signIn, user]);
+  // useEffect(() => {
+  //   if (isSignedIn) {
+  //     router.replace("/");
+  //   } else if (signIn && signIn?.status !== "needs_identifier") {
+  //     router.replace("/auth/sign-in");
+  //   }
+  // }, [signUp, router, signIn, user]);
 
   const handleContinue = async () => {
     if (!signIn || !signUp) return;
@@ -53,7 +53,7 @@ export default function Page() {
         }
       }
 
-      window.location.href = `${window.location.origin}/me`;
+      window.location.href = `${window.location.origin}/`;
     } catch (err: any) {
       setIsLoading(false);
       console.error("Error completing sign-up:", err);
@@ -63,70 +63,58 @@ export default function Page() {
     }
   };
 
-  // --- NEW CODE START: handleCancel function ---
   const handleCancel = () => {
-    // This will navigate the user back to the sign-in/sign-up entry point.
-    // Based on the useEffect, the previous step is likely '/auth/sign-in' or '/auth/sign-up'.
-    // I'm using '/auth/sign-in' as a common initial auth page.
-    // If your previous page is different (e.g., the main login page), adjust this path.
     router.push("/auth/sign-in");
   };
-  // --- NEW CODE END ---
 
   return (
-    <div className='auth-flow continue'>
-      <div className='inner-card '>
-        <div className='auth-left'>
-          <Image
-            src={"/images/collage_marvel2.jpg"}
-            width={1920}
-            height={1080}
-            alt='collage of movies'
+    <div className='min-h-screen flex items-center justify-center bg-[var(--bg-secondary)] text-[var(--text-primary)]'>
+      <div className='bg-[var(--bg-primary)] shadow-lg rounded-2xl w-full max-w-md p-8 sm:p-10 space-y-6'>
+        <div className='flex flex-col items-center space-y-2 text-center'>
+          <h1 className='text-2xl font-semibold '>Sign Up</h1>
+          <p className='text-sm text-[var(--text-secondary)]'>
+            Please fill in the missing details to continue
+          </p>
+        </div>
+
+        {/* Username Input */}
+        <div className='space-y-4'>
+          <BetterInput
+            type='text'
+            placeholder='Username'
+            value={username}
+            onchange={setUsername}
+            name='username'
           />
-        </div>
-        <div className='auth-right'>
-          <div className='rs-inner'>
-            <Logo />
-            <h1>Sign Up</h1>
-            <p className='title-text'>
-              Please fill in the missing details to continue
-            </p>
-            <BetterInput
-              type='text'
-              placeholder='Username'
-              value={username}
-              onchange={setUsername}
-              name='username'
-            />
-            <span className='span-separator'></span>
 
-            {error && <p className='error-txt'>{error}</p>}
+          <span className='block h-px bg-[var(--border)] my-2'></span>
 
-            <div className='btn-container'>
-              <button
-                disabled={isLoading || username.length < 4}
-                type='button'
-                onClick={handleContinue}
-                className={`auth-flow-btn ${
-                  username.length >= 4 ? "active" : "inactive"
-                } ${isLoading ? "loading" : ""}`}
-              >
-                {isLoading ? <Loader2 /> : <span>Continue</span>}
-              </button>
-              {/* --- NEW CODE START: Cancel button --- */}
-              <button
-                type='button'
-                onClick={handleCancel}
-                className='auth-flow-btn secondary-btn' // Added a new class for styling
-                style={{ marginTop: "10px" }} // Basic spacing, refine with CSS
-              >
-                <span>Cancel</span>
-              </button>
-              {/* --- NEW CODE END --- */}
-            </div>
-            <div id='clerk-captcha' />
-          </div>
+          {error && (
+            <p className='text-[var(--danger)] text-sm text-center'>{error}</p>
+          )}
         </div>
+
+        {/* Buttons */}
+        <div className='flex flex-col gap-3'>
+          <button
+            disabled={isLoading || username.length < 4}
+            type='button'
+            onClick={handleContinue}
+            className={`w-full py-2.5 rounded-lg font-medium transition-all shadow-md ${
+              username.length >= 4
+                ? "bg-[var(--primary)] hover:bg-[var(--primary-dark)] hover:shadow-lg"
+                : "bg-[var(--border)] cursor-not-allowed text-[var(--text-secondary)]"
+            } ${isLoading ? "opacity-80" : ""}`}
+          >
+            {isLoading ? (
+              <Loader2 className='animate-spin w-5 h-5 mx-auto text-[var(--primary)]' />
+            ) : (
+              <span>Continue</span>
+            )}
+          </button>
+        </div>
+
+        <div id='clerk-captcha' className='pt-2' />
       </div>
     </div>
   );

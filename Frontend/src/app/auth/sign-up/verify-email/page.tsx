@@ -1,6 +1,4 @@
 "use client";
-import "./verify.css";
-import "../../page.css";
 import { useEffect, useRef, useState } from "react";
 import { useSignIn, useSignUp, useUser } from "@clerk/nextjs";
 import { customToast } from "@/utils/utilities";
@@ -20,13 +18,13 @@ export default function Page() {
   const firstInputRef = useRef<HTMLInputElement>(null); // Fixed: Properly typed ref
   const [loading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    if (isSignedIn) {
-      //router.replace("/me");
-    } else if (signUp && signUp?.status !== "missing_requirements") {
-      //router.replace("/auth/sign-in");
-    }
-  }, [signUp, router, signIn, user, isSignedIn]);
+  // useEffect(() => {
+  //   if (isSignedIn) {
+  //     //router.replace("/me");
+  //   } else if (signUp && signUp?.status !== "missing_requirements") {
+  //     //router.replace("/auth/sign-in");
+  //   }
+  // }, [signUp, router, signIn, user, isSignedIn]);
 
   useEffect(() => {
     if (firstInputRef.current) {
@@ -55,7 +53,7 @@ export default function Page() {
     }
     try {
       await signUp?.attemptEmailAddressVerification({ code });
-      window.location.href = `${window.location.origin}/me`;
+      window.location.href = `${window.location.origin}/`;
       customToast("Email verified! Welcome.", "success");
     } catch (err: any) {
       setError(
@@ -117,52 +115,60 @@ export default function Page() {
   };
 
   return (
-    <div className='auth-flow'>
-      <div className='inner-card continue'>
-        <div className='auth-left'>
-          <Image
-            src={"/images/collage_marvel.jpg"}
-            width={1920}
-            height={1080}
-            alt='collage of movies'
-          />
+    <div className='min-h-screen flex items-center justify-center bg-[var(--bg-secondary)] text-[var(--text-primary)]'>
+      <div className='bg-[var(--bg-primary)] shadow-lg rounded-2xl w-full max-w-md p-8 sm:p-10 space-y-6'>
+        {/* Header */}
+        <div className='flex flex-col items-center space-y-3 text-center'>
+          <h1 className='text-2xl font-semibold'>Please check your email</h1>
+          <p className='text-sm text-[var(--text-secondary)]'>
+            We've sent a code to{" "}
+            <span className='font-medium text-[var(--primary)]'>
+              {signUp?.emailAddress}
+            </span>
+          </p>
         </div>
-        <div className='auth-right'>
-          <div className='rs-inner'>
-            <Logo />
-            <h1>Please check your email</h1>
-            <p className='title-text'>
-              We've sent a code to <span>{signUp?.emailAddress}</span>
-            </p>
-            <div className='input-fields-container'>
-              {otpInputs.map((data, i) => (
-                <input
-                  key={i}
-                  type='text'
-                  ref={i === 0 ? firstInputRef : undefined} // Fixed: Using undefined instead of null
-                  onKeyDown={(e) => handleKeyDown(e, i)}
-                  className='otp-input'
-                  value={data}
-                  maxLength={1}
-                  onChange={(e) => handleChange(e, i)}
-                />
-              ))}
-            </div>
-            <div className='btn-container'>
-              <button
-                disabled={loading || code.length !== 6}
-                onClick={handleVerification}
-                className={`auth-flow-btn ${
-                  code.length === 6 ? "active" : "inactive"
-                }`}
-              >
-                {loading ? <Loader2 /> : <span>Verify</span>}
-              </button>
-            </div>
-            {error && <p className='error-message'>{error}</p>}
-            <div id='clerk-captcha' />
-          </div>
+
+        {/* OTP Inputs */}
+        <div className='flex justify-center gap-3'>
+          {otpInputs.map((data, i) => (
+            <input
+              key={i}
+              type='text'
+              ref={i === 0 ? firstInputRef : undefined}
+              onKeyDown={(e) => handleKeyDown(e, i)}
+              onChange={(e) => handleChange(e, i)}
+              value={data}
+              maxLength={1}
+              className='w-12 h-12 text-center text-lg font-medium border border-[var(--border)] rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent transition-all bg-[var(--bg-tertiary)]'
+            />
+          ))}
         </div>
+
+        {/* Verify Button */}
+        <div className='flex flex-col gap-3'>
+          <button
+            disabled={loading || code.length !== 6}
+            onClick={handleVerification}
+            className={`w-full py-2.5 rounded-lg font-medium transition-all shadow-md ${
+              code.length === 6
+                ? "bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-[var(--foreground)] hover:shadow-lg"
+                : "bg-[var(--border)] cursor-not-allowed text-[var(--text-secondary)]"
+            } ${loading ? "opacity-80" : ""}`}
+          >
+            {loading ? (
+              <Loader2 className='animate-spin w-5 h-5 mx-auto text-[var(--primary)]' />
+            ) : (
+              <span>Verify</span>
+            )}
+          </button>
+        </div>
+
+        {/* Error Message */}
+        {error && (
+          <p className='text-[var(--danger)] text-sm text-center'>{error}</p>
+        )}
+
+        <div id='clerk-captcha' className='pt-2' />
       </div>
     </div>
   );
