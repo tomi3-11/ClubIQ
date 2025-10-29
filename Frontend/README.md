@@ -1,12 +1,51 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# ClubIQ converted to Next.js (app router)
 
-Currently, two official plugins are available:
+What's here:
+- `app/` — Next.js app router files (`layout.jsx`, `page.jsx`)
+- `public/` — all original site files copied from the uploaded ZIP
+- `package.json`, `next.config.js`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+How to run locally:
+1. Ensure Node.js is installed (v18+ recommended).
+2. In this project folder, run:
+   ```bash
+   npm install
+   npm run dev
+   ```
+3. Open http://localhost:3000
 
-## Expanding the ESLint configuration
+Notes:
+- I placed your original files into `/public`. If `index.html` exists, you can open `/index.html` directly.
+- For a proper React migration, you'd convert the HTML into React components under `app/` or `components/`.
+- If you'd like, I can automatically convert specific HTML files into React components and wire up styles — tell me which page(s) to convert next.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Files extracted from the ZIP (short listing):
+clubiq-ui/
+  package.json
+  index.html
+  src/
+    main.jsx
+    App.jsx
+    index.css
+    App.css
+    pages/
+      LoginPage.jsx
+      RegisterPage.jsx
+      MemberDashboard.jsx
+      AdminDashboard.jsx
+    components/
+      Sidebar.jsx
+      ActivityCard.jsx
+      RatingCard.jsx
+      admin/
+        MemberManagement.jsx
+        ActivityManagement.jsx
+        RatingPanel.jsx
+        ReportsAnalytics.jsx
+    styles/
+      auth.css
+      dashboard.css
+      sidebar.css
+      components.css
+      admin.css
