@@ -32,7 +32,7 @@ def create_app(config_class=Config):
     db.init_app(app)
     migrate.init_app(app, db)
     api.init_app(app)
-    cors.init_app(app)
+    cors.init_app(app, supports_credentials=True)
     csrf.init_app(app)
     mail.init_app(app)
     jwt.init_app(app)
