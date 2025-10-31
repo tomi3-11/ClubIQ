@@ -111,6 +111,7 @@ def sync_user():
         email = data.get("email")
         username = data.get("username")
         # last_name = data.get("last_name")
+        print("reached")
 
         # Example logic (you can later integrate with your DB here)
         synced_user = {
@@ -124,7 +125,6 @@ def sync_user():
         return jsonify({
             "message": "User synced successfully",
             "user": synced_user,
-            "verified_user": request.user.get("sub")
         }), 200
 
     except Exception as e:
