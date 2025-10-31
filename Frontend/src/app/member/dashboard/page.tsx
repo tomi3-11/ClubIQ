@@ -53,7 +53,7 @@ export default function MemberDashboard() {
       <main className='dashboard-main'>
         <header className='dashboard-header'>
           <div className='header-content'>
-            <h1>Welcome, {user?.firstName}!</h1>
+            <h1>Welcome, {user?.username}!</h1>
             <p>Track your activities and performance</p>
           </div>
           <button className='btn btn-outline' onClick={handleSignOut}>
