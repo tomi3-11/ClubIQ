@@ -11,7 +11,6 @@ import useSignOut from "@/hooks/useSignOut";
 export default function MemberDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
   const { user } = useUser();
-
   const { handleSignOut } = useSignOut();
 
   const activities = [
@@ -48,7 +47,12 @@ export default function MemberDashboard() {
 
   return (
     <div className='dashboard-container'>
-      <Sidebar role='member' onLogout={handleSignOut} />
+      <Sidebar
+        role='member'
+        onLogout={handleSignOut}
+        activeTab={activeTab}
+        onSelect={(tab) => setActiveTab(tab)}
+      />
 
       <main className='dashboard-main'>
         <header className='dashboard-header'>
