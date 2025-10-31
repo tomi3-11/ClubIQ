@@ -62,7 +62,7 @@ def verify_clerk_token(f):
 
     return decorated_function
 
-@auth_bp.route("/test", methods=["GET"])
+@auth_bp.route("/test", methods=["GET", "POST"])
 def test():
     return jsonify({"message": "Auth routes working!"}), 200
 
@@ -85,3 +85,47 @@ def profile():
         "name": user_info.get("name"),
         "aud": user_info.get("aud"),
     }), 200
+    
+
+
+@auth_bp.route("/sync", methods=["POST"])
+# @verify_clerk_token
+def sync_user():
+    """
+    Synchronize Clerk-authenticated user data with the backend.
+    Expected payload from frontend:
+    {
+        "id": "user_abc123",
+        "email": "example@mail.com",
+        "first_name": "John",
+        "last_name": "Doe"
+    }
+    """
+    try:
+        data = request.get_json()
+
+        if not data:
+            return jsonify({"message": "No user data provided"}), 400
+
+        user_id = data.get("id")
+        email = data.get("email")
+        username = data.get("username")
+        # last_name = data.get("last_name")
+
+        # Example logic (you can later integrate with your DB here)
+        synced_user = {
+            "clerk_user_id": user_id,
+            "email": email,
+            "username": username,
+            # "last_name": last_name,
+            "verified_via": "Clerk"
+        }
+
+        return jsonify({
+            "message": "User synced successfully",
+            "user": synced_user,
+            "verified_user": request.user.get("sub")
+        }), 200
+
+    except Exception as e:
+        return jsonify({"message": "Error syncing user", "error": str(e)}), 500
