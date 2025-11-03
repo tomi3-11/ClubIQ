@@ -1,0 +1,48 @@
+services:
+  db:
+    image: postgres:16
+    container_name: clubiq_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: clubiq
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: .
+      dockerfile: Backend/Dockerfile
+    container_name: clubiq_backend
+    restart: always
+    env_file:
+      - Backend/.env
+    depends_on:
+      - db
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./Backend:/app
+    command: flask run --host=0.0.0.0 --port=5000
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Frontend/Dockerfile
+    container_name: clubiq_frontend
+    restart: always
+    env_file:
+      - Frontend/.env
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./Frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:

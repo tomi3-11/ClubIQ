@@ -1,0 +1,78 @@
+# ==========================================
+# Global ignores (applies to all contexts)
+# ==========================================
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.log
+
+# Node / Next.js
+node_modules/
+npm-debug.log
+yarn-error.log
+.next/
+out/
+dist/
+
+# Environments
+.env
+.env.local
+.env.development
+.env.production
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Testing
+coverage/
+.pytest_cache/
+*.cover
+*.xml
+*.json
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.bak
+
+# Git / Docs
+.git/
+.gitignore
+Docker.md
+README.md
+
+# Temporary files
+tmp/
+*.tmp
+*.pid
+*.sock
+__MACOSX/
+
+# ==========================================
+# Backend-specific ignores
+# ==========================================
+Backend/tests/
+Backend/.mypy_cache/
+Backend/*.egg-info
+Backend/.pytest_cache/
+
+# ==========================================
+# Frontend-specific ignores
+# ==========================================
+Frontend/.next/
+Frontend/node_modules/
+Frontend/.turbo/
+Frontend/build/
+Frontend/out/
+Frontend/.env.local
