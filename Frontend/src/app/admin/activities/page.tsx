@@ -1,1 +1,3 @@
-export default function ActivitiesPage() {}
+export default function ActivitiesPage() {
+  return <div>Activities Page</div>;
+}

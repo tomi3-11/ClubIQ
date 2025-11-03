@@ -47,7 +47,7 @@ export default function Page() {
       const addUserRole = async () => {
         try {
           await setRole(user.id, "user");
-          window.location.href = `${window.location.origin}/sso`;
+          window.location.href = `${window.location.origin}/auth/sso`;
         } catch (error) {
           console.error("Error setting user role:", error);
         }

@@ -14,7 +14,7 @@ export default async function MemberLayout({
 
   const role = user.publicMetadata.role;
   if (role !== "user") {
-    redirect("/sso");
+    redirect("/auth/sso");
   }
 
   return <>{children}</>;

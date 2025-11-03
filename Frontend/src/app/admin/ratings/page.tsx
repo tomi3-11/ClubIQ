@@ -1,1 +1,3 @@
-export default function RatingsPage() {}
+export default function RatingsPage() {
+  return <div>Ratings Page</div>;
+}

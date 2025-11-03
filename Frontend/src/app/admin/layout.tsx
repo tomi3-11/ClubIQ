@@ -14,7 +14,7 @@ export default async function AdminLayout({
 
   const role = user.publicMetadata.role;
   if (role !== "admin") {
-    redirect("/sso");
+    redirect("/auth/sso");
   }
 
   return <>{children}</>;
