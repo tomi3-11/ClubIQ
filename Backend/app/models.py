@@ -1,89 +1,111 @@
-# from datetime import datetime
 import datetime
-from app import db 
+from app import db
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
 from werkzeug.security import generate_password_hash, check_password_hash
- 
-# The Attendance association table
-class Attendance(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    member_id = db.Column(db.Integer, db.ForeignKey('member.id'), nullable=False)
-    event_id = db.Column(db.Integer, db.ForeignKey('event.id'), nullable=False)
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.datetime.now(datetime.timezone.utc))
-    is_present = db.Column(db.Boolean, default=False)
-    
-    def __repr__(self):
-        return f'<Attendance for Member: {self.member_id} at Event {self.event_id}>'
-    
 
-# Club Members Association Table
-class Member(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), index=True, unique=True, nullable=False)
-    email = db.Column(db.String(120), index=True, unique=True, nullable=False)
-    role = db.Column(db.String(64), default='member') # e.g., 'admin', 'member', 'revoked'
-    absence_count = db.Column(db.Integer, default=0)
-    status = db.Column(db.String(64), default='active') # e.g., 'active', 'revoked'
-    join_date = db.Column(db.DateTime, index=True, default=datetime.datetime.utcnow)
-    
-    # Defining a relationship to the Attendance table
-    attendance = db.relationship('Attendance', backref='member', lazy='dynamic')
-    
-    def __repr__(self):
-        return f"<Member: {self.name}>"
-    
-
-# Club Events Table  
-class Event(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(140), nullable=False)
-    date = db.Column(db.DateTime, index=True, default=datetime.datetime.now(datetime.timezone.utc))
-    description = db.Column(db.Text)
-    # event_image = db.Column(db.Imaga)
-    attendance_token = db.Column(db.String(32), nullable=True)
-    token_expiry = db.Column(db.DateTime, nullable=True)
-    event_type = db.Column(db.String(50), default='meeting')
-    
-    # Explicitly define the unique constraint
-    __table_args__ = (db.UniqueConstraint('attendance_token', name='uq_event_attendance_token'),)
-    
-    attendance = db.relationship('Attendance', backref='event', lazy='dynamic')
-    
-    def __repr__(self):
-        return f'<Event: {self.name}>'
-    
-
-# Club Project Table.
-class Project(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(140), nullable=False)
-    description = db.Column(db.Text)
-    members = db.Column(db.String(256)) # Members will be stored in a comma-separated list of member names for simplicity
-    status = db.Column(db.String(64), default='in progress') # e.g., 'in progress', 'completed'
-    start_date = db.Column(db.DateTime, default=datetime.timezone.utc)
-    end_date = db.Column(db.DateTime, nullable=True)
-    
-    def __repr__(self):
-        return f"<Project: {self.title}>"
-    
-    
 class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), index=True, unique=True, nullable=False)
-    email = db.Column(db.String(120), index=True, unique=True, nullable=False)
-    password_hash = db.Column(db.String(128))
-    role = db.Column(db.String(64), default="member")
-    reset_token = db.Column(db.String(64), unique=True, nullable=True)
-    token_expiry = db.Column(db.DateTime, nullable=True)
-    
+    """
+    User model to store user information.
+    """
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    clerk_id = db.Column(db.String(50), unique=True, nullable=False)
+    name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(50), unique=True, nullable=False)
+    username = db.Column(db.String(30), unique=True, nullable=False)
+    image_url = db.Column(db.String(200), nullable=True)
+    role = db.Column(db.String(50), nullable=False, default='user')
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+
     def __repr__(self):
         return f'<User {self.username}>'
     
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
-        
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
-    
+class Club(db.Model):
+    """
+    Club model to store club information.
+    """ 
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name = db.Column(db.String(60), unique=True, nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    created_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+
+    def __repr__(self):
+        return f'<Club {self.name}>'
+
+class Club_member(db.Model):
+    """
+    Club Member model to store membership information.
+    """
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    club_id = db.Column(UUID(as_uuid=True), db.ForeignKey('clubs.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    role = db.Column(db.String(50), nullable=False, default='member')
+    joined_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
+    def __repr__(self): 
+        return f'<ClubMember UserID: {self.user_id} ClubID: {self.club_id}>'
+
+class Activity(db.Model):
+    """
+    Activity model to store activity information.
+    """
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    club_id = db.Column(UUID(as_uuid=True), db.ForeignKey('clubs.id'), nullable=False)
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    start_date = db.Column(db.DateTime, nullable=True)
+    end_date = db.Column(db.DateTime, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
+    def __repr__(self):
+        return f'<Activity {self.title}>'
+
+class Task(db.Model):
+    """
+    Task model to store task information.       
+    """
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    activity_id = db.Column(UUID(as_uuid=True), db.ForeignKey('activities.id'), nullable=False)
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=True)
+    assigned_to = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    status = db.Column(db.String(50), nullable=False, default='pending')
+    due_date = db.Column(db.DateTime, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
+    def __repr__(self):
+        return f'<Task {self.title} Assigned to {self.assigned_to} Status {self.status}>'
+
+class Rating(db.Model):
+    """
+    Rating model to store task ratings.
+    """
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    task_id = db.Column(UUID(as_uuid=True), db.ForeignKey('tasks.id'), nullable=False)
+    rated_user = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    rated_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    score = db.Column(db.Integer, nullable=False)
+    comments = db.Column(db.Text, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
+    def __repr__(self):
+        return f'<Rating TaskID: {self.task_id} User: {self.rated_user} Score: {self.score}>'
+
+class Invitation(db.Model):
+    """
+    Invitation model to store invitation information.
+    """
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    email = db.Column(db.String(120), nullable=False)
+    invited_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    token = db.Column(db.String(200), unique=True, nullable=False)
+    status = db.Column(db.String(50), nullable=False, default='pending')
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    expirers_at = db.Column(db.DateTime, nullable=True)
+
+    def __repr__(self):
+        return f'<Invitation {self.email} Status: {self.status}>'
     
