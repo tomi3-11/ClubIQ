@@ -2,7 +2,7 @@ from flask import request, Blueprint
 from flask_restful import Resource, Api
 # from app.members import members_bp
 from app import api, db, csrf
-from app.models import Member, User
+from app.models import Club_member, User
 from app.forms import MemberForm
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from functools import wraps
@@ -42,27 +42,19 @@ def requires_roles(*roles):
 class MemberResource(Resource):
     @jwt_required()
     def get(self, member_id):
-        member = Member.query.get_or_404(member_id)
+        member = Club_member.query.get_or_404(member_id)
         return {
             "id": member.id,
-            "name": member.name,
-            "email": member.email,
             "role": member.role,
-            "absence_count": member.absence_count,
-            "status": member.status,
             "join_date": member.join_date.isoformat(),
         }, 200
         
     @requires_roles('admin')
     def put(self, member_id):
-        member = Member.query.get_or_404(member_id)
+        member = Club_member.query.get_or_404(member_id)
         data = request.get_json()
         
         # Update fields if they are in the request
-        if 'name' in data:
-            member.name = data['name']
-        if 'email' in data:
-            member.email = data['email']
         if 'role' in data:
             member.role = data['role']
             
@@ -71,14 +63,12 @@ class MemberResource(Resource):
         return {
             "message": "Member updated successfully",
             "id": member.id,
-            "name": member.name,
-            "email": member.email,
             "role": member.role,
         }, 200
         
     @requires_roles('admin')
     def delete(self, member_id):
-        member = Member.query.get_or_404(member_id)
+        member = Club_member.query.get_or_404(member_id)
         db.session.delete(member)
         db.session.commit()
         return {
@@ -90,16 +80,12 @@ class MemberResource(Resource):
 class MemberListResource(Resource):
     @jwt_required()
     def get(self):
-        members = Member.query.all()
+        members = Club_member.query.all()
         member_list = []
         for member in members:
             member_list.append({
                 "id": member.id,
-                "name": member.name,
-                "email": member.email,
                 "role": member.role,
-                "absence_count": member.absence_count,
-                "status": member.status,
                 "join_date": member.join_date.isoformat(),
             })
         return member_list, 200
@@ -119,9 +105,8 @@ class MemberListResource(Resource):
                     "error": f"Missing field: {field}"
                 }, 400
         
-        new_member = Member(
+        new_member = Club_member(
             name=data["name"],
-            email=data["email"],
             role=data["role"]
         )  
         db.session.add(new_member)

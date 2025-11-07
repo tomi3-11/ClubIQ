@@ -40,29 +40,13 @@ def create_app(config_class=Config):
     
     # Register blueprints for modularity
     from app.members.routes import members_bp
-    from app.events.routes import events_bp
+    #from app.events.routes import events_bp
     from app.core.routes import core_bp
     from app.auth.routes import auth_bp
     
     app.register_blueprint(members_bp)
-    app.register_blueprint(events_bp)
     app.register_blueprint(core_bp)
     app.register_blueprint(auth_bp)
      
-    from app.tasks import send_event_notifications
-    # Start the scheduler
-    if not scheduler.running:
-        # scheduler.init_app(app)
-        scheduler.start()
-    
-    # Adding the scheduled job
-    scheduler.add_job(
-        id='send_event_notifications',
-        func=send_event_notifications,
-        trigger='interval',
-        hours=24,
-        replace_existing=True
-    )
-    
     
     return app

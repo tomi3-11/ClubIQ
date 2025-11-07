@@ -28,7 +28,7 @@ class Club(db.Model):
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = db.Column(db.String(60), unique=True, nullable=False)
     description = db.Column(db.Text, nullable=True)
-    created_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    created_by = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
 
@@ -40,8 +40,8 @@ class Club_member(db.Model):
     Club Member model to store membership information.
     """
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    club_id = db.Column(UUID(as_uuid=True), db.ForeignKey('clubs.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    club_id = db.Column(UUID(as_uuid=True), db.ForeignKey('Club.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
     role = db.Column(db.String(50), nullable=False, default='member')
     joined_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
@@ -53,7 +53,7 @@ class Activity(db.Model):
     Activity model to store activity information.
     """
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    club_id = db.Column(UUID(as_uuid=True), db.ForeignKey('clubs.id'), nullable=False)
+    club_id = db.Column(UUID(as_uuid=True), db.ForeignKey('Club.id'), nullable=False)
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=True)
     start_date = db.Column(db.DateTime, nullable=True)
@@ -68,10 +68,10 @@ class Task(db.Model):
     Task model to store task information.       
     """
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    activity_id = db.Column(UUID(as_uuid=True), db.ForeignKey('activities.id'), nullable=False)
+    activity_id = db.Column(UUID(as_uuid=True), db.ForeignKey('Activity.id'), nullable=False)
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=True)
-    assigned_to = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    assigned_to = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=True)
     status = db.Column(db.String(50), nullable=False, default='pending')
     due_date = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
@@ -84,9 +84,9 @@ class Rating(db.Model):
     Rating model to store task ratings.
     """
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    task_id = db.Column(UUID(as_uuid=True), db.ForeignKey('tasks.id'), nullable=False)
-    rated_user = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    rated_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    task_id = db.Column(UUID(as_uuid=True), db.ForeignKey('Task.id'), nullable=False)
+    rated_user = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
+    rated_by = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
     score = db.Column(db.Integer, nullable=False)
     comments = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
@@ -100,7 +100,7 @@ class Invitation(db.Model):
     """
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     email = db.Column(db.String(120), nullable=False)
-    invited_by = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    invited_by = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
     token = db.Column(db.String(200), unique=True, nullable=False)
     status = db.Column(db.String(50), nullable=False, default='pending')
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
@@ -108,4 +108,5 @@ class Invitation(db.Model):
 
     def __repr__(self):
         return f'<Invitation {self.email} Status: {self.status}>'
-    
+
+
