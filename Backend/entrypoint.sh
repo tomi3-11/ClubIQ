@@ -15,11 +15,7 @@ flask db init || true
 flask db migrate -m "auto migration" || true
 flask db upgrade || true
 
-# Run seed script if it exists
-if [ -f "app/seed.py" ]; then
-  echo "Running seed data..."
-  python app/seed.py
-fi
+
 
 # Start the Flask development server
 echo "Starting Flask development server..."
