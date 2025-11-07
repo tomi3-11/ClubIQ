@@ -15,7 +15,7 @@ help:
 	@echo "--------------------------------"
 	@echo "Usage:"
 	@echo "  make build              - Build and start all containers"
-	@echo "  make up                 - Start all containers
+	@echo "  make up                 - Start all containers"
 	@echo "  make up -d              - Start all containers in detached mode"
 	@echo "  make down               - Stop all containers"
 	@echo "  make rebuild            - Force rebuild containers"
