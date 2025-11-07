@@ -1,0 +1,19 @@
+
+.input-fields-container{
+    display: flex;
+    gap: 5px;
+    margin: 20px auto;
+    margin-top: 25px;
+    width: fit-content;
+}
+
+.input-fields-container input{
+    width: 16%;
+    height: 45px;
+    max-width: 45px;
+    border-radius: 8px;
+    border: 1px solid #3E989D;
+    text-align: center;
+    color: white;
+
+}

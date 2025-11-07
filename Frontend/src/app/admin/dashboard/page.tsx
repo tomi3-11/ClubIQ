@@ -2,21 +2,28 @@
 
 import { useState } from "react";
 
-import "../../styles/dashboard.css";
+import "../../../styles/dashboard.css";
 import Sidebar from "@/components/Sidebar";
 import MemberManagement from "@/components/admin/MemberManagement";
 import ActivityManagement from "@/components/admin/ActivityManagement";
 import RatingPanel from "@/components/admin/RatingPanel";
 import ReportsAnalytics from "@/components/admin/ReportsAnalytics";
+import useSignOut from "@/hooks/useSignOut";
+import Overview from "@/components/admin/Overview";
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
 
-  const handleLogout = () => {};
+  const { handleSignOut } = useSignOut();
 
   return (
     <div className='dashboard-container'>
-      <Sidebar role='admin' onLogout={handleLogout} />
+      <Sidebar
+        role='admin'
+        onLogout={handleSignOut}
+        activeTab={activeTab}
+        onSelect={(tab) => setActiveTab(tab)}
+      />
 
       <main className='dashboard-main'>
         <header className='dashboard-header'>
@@ -24,7 +31,7 @@ export default function AdminDashboard() {
             <h1>Admin Dashboard</h1>
             <p>Manage clubs, members, and activities</p>
           </div>
-          <button className='btn btn-outline' onClick={handleLogout}>
+          <button className='btn btn-outline' onClick={handleSignOut}>
             Logout
           </button>
         </header>
@@ -63,29 +70,7 @@ export default function AdminDashboard() {
         </div>
 
         <div className='dashboard-content'>
-          {activeTab === "overview" && (
-            <div className='admin-overview'>
-              <div className='stats-grid'>
-                <div className='stat-card'>
-                  <div className='stat-label'>Total Members</div>
-                  <div className='stat-value'>48</div>
-                </div>
-                <div className='stat-card'>
-                  <div className='stat-label'>Active Activities</div>
-                  <div className='stat-value'>12</div>
-                </div>
-                <div className='stat-card'>
-                  <div className='stat-label'>Avg Rating</div>
-                  <div className='stat-value'>4.1/5</div>
-                </div>
-                <div className='stat-card'>
-                  <div className='stat-label'>Completion Rate</div>
-                  <div className='stat-value'>87%</div>
-                </div>
-              </div>
-            </div>
-          )}
-
+          {activeTab === "overview" && <Overview />}
           {activeTab === "members" && <MemberManagement />}
           {activeTab === "activities" && <ActivityManagement />}
           {activeTab === "ratings" && <RatingPanel />}

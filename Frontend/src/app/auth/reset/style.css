@@ -1,0 +1,343 @@
+.auth-flow{
+    width: 100%;
+
+}
+
+.reset-wrapper{
+    width: 100%;
+    background-color: var(--page-background);
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.reset-container{
+    width: 100%;
+    max-width: 450px;
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+
+}
+
+.reset-container img{
+    aspect-ratio: 122 /67;
+    max-width: 122px;
+    margin: 40px auto;
+}
+
+.reset-container h1{
+    font-weight: 600;
+    font-size: 28px;
+    margin: 20px auto;
+}
+
+.reset-container label{
+    width: fit-content;
+    margin: 15px auto;
+    display: block;
+    margin-bottom: 10px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.reset-container .typical-tnp-input{
+    max-width: 300px;
+    width: 100%;
+    margin: auto;
+    display: block;
+}
+
+.reset-container .input-container{
+    max-width: 300px;
+    margin: auto;
+
+}
+
+.reset-container .reset-txt{
+    color: #FFC700;
+}
+
+.reset-container .reset-txt span{
+    font-weight: 600;
+}
+
+.input-fields-container{
+    display: flex;
+    gap: 5px;
+    margin: auto;
+    width: fit-content;
+}
+
+.input-fields-container input{
+    width: 16%;
+    height: 45px;
+    max-width: 45px;
+    border-radius: 8px;
+    border: 1px solid #B68601;
+    text-align: center;
+    color: #050038;
+
+}
+
+.reset-container button{
+    margin: 40px auto;
+}
+
+.reset-container .typical-tnp-input.create{
+    margin-top: 20px;
+}
+
+.reset-container .typical-tnp-button.loading{
+    background-color: rgba(128, 128, 128, 0.288);
+}
+
+.reset-container .typical-tnp-button .loader{
+    transform: scale(.5) translateY(4px);
+}
+
+.reset-container .error-txt{
+    max-width: 320px;
+    width: fit-content;
+    margin: 10px auto;
+    margin-bottom: 0px;
+    font-size: 11px;
+    color: #D2302C;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.reset-flow{
+    width: 100%;
+    max-width: 400px;
+    padding: 0px 10px;
+    padding-top: 20px;
+    margin: auto;
+}
+
+.reset-navbar{
+    display: flex;
+    justify-content: center;
+}
+
+.card-container{
+    width: 100%;
+    max-width: 380px;
+    height: fit-content;
+    display: grid;
+    grid-template-columns: repeat(2, 100%);
+    overflow: hidden;
+    margin: auto;
+
+
+}
+
+.reset-card{
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    margin-top: 40px;
+}
+.reset-card.hide{
+    width: 0%;
+}
+
+.prompt-form-container{
+    text-align: center;
+    gap: 25px;
+}
+
+
+
+.prompt-form-container p{
+    color: #727272;
+    font-family: "Plus Jakarta Sans";
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 14.28px;
+    letter-spacing: -0.001em;
+    text-align: center;
+    text-underline-position: from-font;
+    text-decoration-skip-ink: none;
+}
+
+
+.prompt-form-container h1{
+    font-size: 26px;
+    text-align: center;
+
+}
+
+.prompt-form-container form{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.prompt-form-container form input{
+    max-width: 280px;
+    font-family: "Jersey 10", sans-serif;
+    padding-left: 15px;
+}
+
+.prompt-form-container form input::placeholder{
+    font-size: 16px;
+}
+
+.prompt-form-container form button{
+    margin: 50px auto;
+    font-size: 20px;
+}
+
+.check-flow{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+
+}
+
+.check-flow img{
+    width: width 90px;
+    height: 90px;
+    margin: auto;
+
+}
+
+.check-flow h1{
+    margin-top: 20px;
+    font-size: 22px;
+}
+
+.check-flow p{
+    max-width: 320px;
+    margin: auto;
+    color: #727272;
+    font-size: 14px;
+}
+
+.check-flow button{
+    margin-top: 30px;
+    margin-bottom: 80px;
+}
+
+.check-flow p span{
+    color: #B68601;
+    cursor: pointer;
+
+}
+
+.create-pass-card{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 270px;
+    margin: auto;
+}
+
+.create-pass-card h1{
+    font-size: 24px;
+    margin-top: 40px;
+    font-weight: 600;
+}
+
+.create-pass-card p{
+    color: #727272;
+    font-size: 15px;
+    max-width: 300px;
+}
+
+.create-pass-card form{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.create-pass-card form input{
+    width: 100%;
+    padding-left: 20px;
+}
+
+.create-pass-card form input::placeholder{
+    font-family: "Jersey 10", sans-serif;
+    font-size: 16px;
+}
+
+.reset-flow .input-container{
+    width: 100%;
+}
+
+.reset-flow .input-container span{
+    height: 14px;
+    visibility: hidden;
+
+}
+
+.reset-flow .input-container span.show{
+    visibility: visible;
+}
+
+.input-container .error-text,
+.error-text{
+    font-size: 11px;
+    color: #D2302C;
+}
+
+.prompt-form-container .input-container{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.prompt-form-container .error-text{
+    text-align: left;
+    max-width: 280px;
+    min-width: 280px;
+    margin: auto;
+    padding-left: 3px;
+}
+
+.create-pass-card form button{
+    font-size: 21px;
+    margin-top: 20px;
+}
