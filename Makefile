@@ -20,7 +20,6 @@ help:
 	@echo "  make logs      - View live logs"
 	@echo "  make shell     - Open a shell inside the backend container"
 	@echo "  make migrate   - Run Flask migrations (migrate + upgrade)"
-	@echo "  make seed      - Run database seed script manually"
 	@echo "  make clean     - Remove all containers, networks, and volumes"
 	@echo ""
 
@@ -39,17 +38,16 @@ rebuild:
 logs:
 	docker compose -f $(COMPOSE_FILE) logs -f
 
-shell:
+shell backend:
 	docker compose -f $(COMPOSE_FILE) exec backend /bin/bash
+
+shell frontend:
+	docker compose -f $(COMPOSE_FILE) exec frontend /bin/bash
 
 migrate:
 	@echo "$(GREEN)Running database migrations...$(NC)"
 	docker compose -f $(COMPOSE_FILE) exec backend flask db migrate -m "auto migration"
 	docker compose -f $(COMPOSE_FILE) exec backend flask db upgrade
-
-seed:
-	@echo "$(GREEN)Running database seed script...$(NC)"
-	docker compose -f $(COMPOSE_FILE) exec backend python app/seed.py
 
 clean:
 	@echo "$(YELLOW)Removing all containers, networks, and volumes...$(NC)"

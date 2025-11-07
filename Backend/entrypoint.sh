@@ -15,8 +15,6 @@ flask db init || true
 flask db migrate -m "auto migration" || true
 flask db upgrade || true
 
-
-
 # Start the Flask development server
 echo "Starting Flask development server..."
 exec flask run --host=0.0.0.0 --port=5000
