@@ -8,7 +8,6 @@ It includes the **Flask backend**, **Next.js frontend**, and **PostgreSQL databa
 The setup automatically handles:
 
 * Database initialization and migrations
-* Demo data seeding (5 members including one admin)
 * Hot reloading for both backend and frontend
 * Persistent Postgres storage
 
@@ -44,7 +43,6 @@ ClubIQ/
 │   ├── requirements.txt
 │   ├── app/
 │   │   ├── models.py
-│   │   ├── seed.py
 │   │   └── ...
 │   └── .env.example
 │
@@ -76,16 +74,31 @@ Then open both `.env` files and replace values as needed:
 **Backend/.env**
 
 ```bash
+# Flask settings
+FLASK_APP=run.py
 FLASK_ENV=development
-SECRET_KEY=your-secret-key
+SECRET_KEY=your-secret-key-here
+
+# Database settings
 DATABASE_URL=postgresql://postgres:postgres@db:5432/clubiq
+
+# Clerk settings
+CLERK_SECRET_KEY=your-clerk-secret-key
+
+# Optional debug settings
+DEBUG=True
 ```
 
 **Frontend/.env**
 
 ```bash
+# API and app URLs
 NEXT_PUBLIC_API_URL=http://localhost:5000
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Clerk authentication
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your-clerk-publishable-key
+CLERK_SECRET_KEY=your-clerk-secret-key
 ```
 
 ---
@@ -95,14 +108,13 @@ NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your-clerk-publishable-key
 Run all containers with:
 
 ```bash
-make up
+make build
 ```
 
 This automatically:
 
 * Builds all images
 * Initializes and migrates the database
-* Seeds demo members
 * Launches the Flask + Next.js servers
 
 Visit your app at:
@@ -116,13 +128,14 @@ Visit your app at:
 
 | Command        | Description                                  |
 | -------------- | -------------------------------------------- |
-| `make up`      | Build and start containers                   |
-| `make down`    | Stop and remove containers                   |
+| `make build`   | Build and start containers                   |
+| `make up`      | Start all containers                         |
+| `make down`    | Stop all containers                          |
 | `make rebuild` | Rebuild all containers from scratch          |
 | `make logs`    | View combined container logs                 |
-| `make shell`   | Access a shell inside the backend container  |
+| `make front`   | Access a shell inside the frontend container |
+| `make back`   | Access a shell inside the backend container   |
 | `make migrate` | Manually run Flask migrations                |
-| `make seed`    | Manually re-seed the database                |
 | `make clean`   | Remove all containers, networks, and volumes |
 
 ---
@@ -135,7 +148,6 @@ If you don’t have `make` installed:
 docker compose -f docker-compose.dev.yml up --build
 docker compose -f docker-compose.dev.yml down
 docker compose -f docker-compose.dev.yml exec backend flask db upgrade
-docker compose -f docker-compose.dev.yml exec backend python app/seed.py
 ```
 
 ---
@@ -147,7 +159,7 @@ To reset your database completely (including schema and seed data):
 
 ```bash
 make clean
-make up
+make build
 ```
 
 ---

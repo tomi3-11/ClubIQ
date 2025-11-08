@@ -48,6 +48,6 @@ migrate:
 	docker compose -f $(COMPOSE_FILE) exec backend flask db migrate -m "auto migration"
 	docker compose -f $(COMPOSE_FILE) exec backend flask db upgrade
 
-remove:
+clean:
 	@echo "Removing all containers, networks, and volumes..."
 	docker compose -f $(COMPOSE_FILE) down --volumes
