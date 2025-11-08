@@ -3,61 +3,51 @@
 # Default Compose file
 COMPOSE_FILE = docker-compose.dev.yml
 
-# Colors for readability
-GREEN  := \033[0;32m
-YELLOW := \033[1;33m
-NC     := \033[0m
-
 # Default target
 help:
 	@echo ""
 	@echo "Usage:"
 	@echo "  make build              - Build and start all containers"
 	@echo "  make up                 - Start all containers"
-	@echo "  make up -d              - Start all containers in detached mode"
 	@echo "  make down               - Stop all containers"
 	@echo "  make rebuild            - Force rebuild containers"
 	@echo "  make logs               - View live logs"
-	@echo "  make shell frontend     - Open a shell inside the frontend container"
-	@echo "  make shell backend      - Open a shell inside the backend container"
+	@echo "  make shell -f           - Open a shell inside the frontend container"
+	@echo "  make shell -b           - Open a shell inside the backend container"
 	@echo "  make migrate            - Run Flask migrations (migrate + upgrade)"
 	@echo "  make clean              - Remove all containers, networks, and volumes"
 	@echo ""
 
 build:
-	@echo "$(GREEN)Building ClubIQ containers...$(NC)"
+	@echo "Building ClubIQ containers..."
 	docker compose -f $(COMPOSE_FILE) up --build
 
 up:
-	@echo "$(GREEN)Starting ClubIQ containers...$(NC)"
-	docker start $(docker ps -aq)
-
-up -d:
-	@echo "$(GREEN)Starting ClubIQ containers in detached mode...$(NC)"
-	docker start -d $(docker ps -a -q)
+	@echo "Starting ClubIQ containers..."
+	docker start $$(docker ps -aq)
 
 down:
-	@echo "$(YELLOW)Stopping containers...$(NC)"
-	docker stop $(docker ps -aq)
+	@echo "Stopping containers..."
+	docker stop $$(docker ps -aq)
 
 rebuild:
-	@echo "$(YELLOW)Rebuilding containers...$(NC)"
+	@echo "Rebuilding containers..."
 	docker compose -f $(COMPOSE_FILE) up --build --force-recreate
 
 logs:
 	docker compose -f $(COMPOSE_FILE) logs -f
 
-shell frontend:
+shell -f:
 	docker exec -it clubiq_frontend sh
 
-shell backend:
+shell -b:
 	docker exec -it clubiq_backend sh
 
 migrate:
-	@echo "$(GREEN)Running database migrations...$(NC)"
+	@echo "Running database migrations..."
 	docker compose -f $(COMPOSE_FILE) exec backend flask db migrate -m "auto migration"
 	docker compose -f $(COMPOSE_FILE) exec backend flask db upgrade
 
 clean:
-	@echo "$(YELLOW)Removing all containers, networks, and volumes...$(NC)"
+	@echo "Removing all containers, networks, and volumes..."
 	docker compose -f $(COMPOSE_FILE) down --volumes
