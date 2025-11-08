@@ -7,15 +7,15 @@ COMPOSE_FILE = docker-compose.dev.yml
 help:
 	@echo ""
 	@echo "Usage:"
-	@echo "  make build              - Build and start all containers"
-	@echo "  make up                 - Start all containers"
-	@echo "  make down               - Stop all containers"
-	@echo "  make rebuild            - Force rebuild containers"
-	@echo "  make logs               - View live logs"
-	@echo "  make shell -f           - Open a shell inside the frontend container"
-	@echo "  make shell -b           - Open a shell inside the backend container"
-	@echo "  make migrate            - Run Flask migrations (migrate + upgrade)"
-	@echo "  make clean              - Remove all containers, networks, and volumes"
+	@echo "  make build                    - Build and start all containers"
+	@echo "  make up                       - Start all containers"
+	@echo "  make down                     - Stop all containers"
+	@echo "  make rebuild                  - Force rebuild containers"
+	@echo "  make logs                     - View live logs"
+	@echo "  make front                    - Open a shell inside the frontend container"
+	@echo "  make back                     - Open a shell inside the backend container"
+	@echo "  make migrate                  - Run Flask migrations (migrate + upgrade)"
+	@echo "  make clean                    - Remove all containers, networks, and volumes"
 	@echo ""
 
 build:
@@ -37,10 +37,10 @@ rebuild:
 logs:
 	docker compose -f $(COMPOSE_FILE) logs -f
 
-shell -f:
+front:
 	docker exec -it clubiq_frontend sh
 
-shell -b:
+back:
 	docker exec -it clubiq_backend sh
 
 migrate:
@@ -48,6 +48,6 @@ migrate:
 	docker compose -f $(COMPOSE_FILE) exec backend flask db migrate -m "auto migration"
 	docker compose -f $(COMPOSE_FILE) exec backend flask db upgrade
 
-clean:
+remove:
 	@echo "Removing all containers, networks, and volumes..."
 	docker compose -f $(COMPOSE_FILE) down --volumes
