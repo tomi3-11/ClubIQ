@@ -11,8 +11,6 @@ NC     := \033[0m
 # Default target
 help:
 	@echo ""
-	@echo "$(YELLOW)ClubIQ Development Environment$(NC)"
-	@echo "--------------------------------"
 	@echo "Usage:"
 	@echo "  make build              - Build and start all containers"
 	@echo "  make up                 - Start all containers"
@@ -62,4 +60,4 @@ migrate:
 
 clean:
 	@echo "$(YELLOW)Removing all containers, networks, and volumes...$(NC)"
-	docker compose -f $(COMPOSE_FILE) down --volume
+	docker compose -f $(COMPOSE_FILE) down --volumes
