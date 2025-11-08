@@ -24,7 +24,7 @@ COPY Backend/ .
 
 # Copy entrypoint
 COPY Backend/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+RUN sed -i 's/\r$//' /entrypoint.sh && chmod +x /entrypoint.sh
 
 # Expose Flask dev port
 EXPOSE 5000
