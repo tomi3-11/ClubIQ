@@ -43,3 +43,32 @@ body {
   background-color: var(--bg-secondary);
   color: var(--text-primary);
 }
+
+.rt-toast {
+  width: fit-content;
+  min-width: 260px;
+  left: 50%;
+  transform: translateX(20%);
+  background-color: white;
+  border-radius: 8px;
+  font-family: "Jersey 10", sans-serif;
+  padding: 10px 20px;
+  font-size: 18px;
+  text-align: center;
+  margin: auto;
+}
+
+.rt-toast.creating {
+  background-color: #ffecb8;
+  color: #ffbf0d;
+}
+
+.rt-toast.success {
+  background-color: #eaffe7;
+  color: #1bc300;
+}
+
+.rt-toast.fail {
+  background-color: #f9b6b4;
+  color: #d2302c;
+}

@@ -123,7 +123,7 @@ export default function Page() {
             } ${isLoading ? "opacity-80" : ""}`}
           >
             {isLoading ? (
-              <Loader2 className='animate-spin w-5 h-5 mx-auto text-[var(--primary)]' />
+              <Loader2 className='animate-spin w-5 h-5 mx-auto text-white' />
             ) : (
               <span>Continue</span>
             )}
