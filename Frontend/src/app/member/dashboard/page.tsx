@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../../../styles/dashboard.css";
 import Sidebar from "@/components/Sidebar";
 import ActivityCard from "@/components/ActivityCard";
@@ -10,12 +10,19 @@ import useSignOut from "@/hooks/useSignOut";
 import Profile from "@/components/member/Profile";
 import Activities from "@/components/member/Activities";
 import Overview from "@/components/member/Overview";
+import { customToast } from "@/utils/utilities";
 
 export default function MemberDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
   const { user } = useUser();
   const { handleSignOut } = useSignOut();
 
+  useEffect(() => {
+
+            customToast("Email verified! Welcome.", "success", 100000);
+ 
+
+  }, [])
   return (
     <div className='dashboard-container'>
       <Sidebar

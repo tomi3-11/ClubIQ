@@ -40,8 +40,8 @@ export const validatePassword = (password: string): true | string => {
 export const customToast = (message: string, name: string, duration = 2000) => {
   return toast.custom(
     (t) => (
-      <div className={`rt-toast ${name}`}>
-        <h1>{message}</h1>
+      <div className={`rt-toast ${name} text-sm`}>
+        <span>{message}</span>
       </div>
     ),
     { position: "bottom-center", duration }

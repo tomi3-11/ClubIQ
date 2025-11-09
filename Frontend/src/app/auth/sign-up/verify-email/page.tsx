@@ -13,7 +13,7 @@ export default function Page() {
   const [code, setCode] = useState("");
   const router = useRouter();
   const { user, isSignedIn } = useUser();
-  const { signIn } = useSignIn();
+  const { signIn, setActive } = useSignIn();
   const firstInputRef = useRef<HTMLInputElement>(null); // Fixed: Properly typed ref
   const [loading, setIsLoading] = useState(false);
   const [shouldSetRole, setShouldSetRole] = useState(false);
@@ -67,7 +67,13 @@ export default function Page() {
       return;
     }
     try {
-      await signUp?.attemptEmailAddressVerification({ code });
+      const res = await signUp?.attemptEmailAddressVerification({ code });
+
+      if(res?.status === "complete" && setActive){
+        setActive({
+          session: res.createdSessionId,
+        });
+      }
       setShouldSetRole(true);
 
       customToast("Email verified! Welcome.", "success");
@@ -172,7 +178,7 @@ export default function Page() {
             } ${loading ? "opacity-80" : ""}`}
           >
             {loading ? (
-              <Loader2 className='animate-spin w-5 h-5 mx-auto text-[var(--primary)]' />
+              <Loader2 className='animate-spin w-5 h-5 mx-auto text-white' />
             ) : (
               <span>Verify</span>
             )}
