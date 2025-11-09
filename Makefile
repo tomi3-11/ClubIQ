@@ -15,15 +15,15 @@ help:
 	@echo "--------------------------------"
 	@echo "Usage:"
 	@echo "  make build              - Build and start all containers"
-	@echo "  make up                 - Start all containers"
-	@echo "  make up -d              - Start all containers in detached mode"
+	@echo "  make up                 - Start all containers (attached)"
+	@echo "  make up-detached        - Start all containers (detached)"
 	@echo "  make down               - Stop all containers"
-	@echo "  make rebuild            - Force rebuild containers"
+	@echo "  make rebuild            - Force rebuild and recreate containers"
 	@echo "  make logs               - View live logs"
-	@echo "  make shell frontend     - Open a shell inside the frontend container"
-	@echo "  make shell backend      - Open a shell inside the backend container"
-	@echo "  make migrate            - Run Flask migrations (migrate + upgrade)"
-	@echo "  make clean              - Remove all containers, networks, and volumes"
+	@echo "  make shell-frontend     - Open a shell inside the frontend container"
+	@echo "  make shell-backend      - Open a shell inside the backend container"
+	@echo "  make migrate            - Run Flask migrations"
+	@echo "  make clean              - Remove all containers, networks, volumes"
 	@echo ""
 
 build:
@@ -32,15 +32,15 @@ build:
 
 up:
 	@echo "$(GREEN)Starting ClubIQ containers...$(NC)"
-	docker start $(docker ps -aq)
+	docker compose -f $(COMPOSE_FILE) up
 
-up -d:
+up-detached:
 	@echo "$(GREEN)Starting ClubIQ containers in detached mode...$(NC)"
-	docker start -d $(docker ps -a -q)
+	docker compose -f $(COMPOSE_FILE) up -d
 
 down:
 	@echo "$(YELLOW)Stopping containers...$(NC)"
-	docker stop $(docker ps -aq)
+	docker compose -f $(COMPOSE_FILE) down
 
 rebuild:
 	@echo "$(YELLOW)Rebuilding containers...$(NC)"
@@ -49,10 +49,10 @@ rebuild:
 logs:
 	docker compose -f $(COMPOSE_FILE) logs -f
 
-shell frontend:
+shell-frontend:
 	docker exec -it clubiq_frontend sh
 
-shell backend:
+shell-backend:
 	docker exec -it clubiq_backend sh
 
 migrate:
@@ -62,4 +62,4 @@ migrate:
 
 clean:
 	@echo "$(YELLOW)Removing all containers, networks, and volumes...$(NC)"
-	docker compose -f $(COMPOSE_FILE) down --volume
+	docker compose -f $(COMPOSE_FILE) down --volumes

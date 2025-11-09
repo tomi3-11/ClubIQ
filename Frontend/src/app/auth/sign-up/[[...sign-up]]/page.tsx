@@ -141,11 +141,12 @@ export default function Page() {
         {/* Social Signup */}
         <div className='flex flex-col gap-3'>
           <button
+            disabled={loading}
             onClick={() => handleOAuthSignUp("oauth_google")}
             className='w-full flex items-center justify-center gap-3 border border-[var(--border)] py-2.5 rounded-lg hover:bg-[var(--bg-tertiary)] transition-all'
           >
             {loading ? (
-              <Loader2 className='animate-spin w-5 h-5 text-[var(--primary)]' />
+              <Loader2 className='animate-spin w-5 h-5 text-white' />
             ) : (
               <GoogleSvg />
             )}
