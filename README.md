@@ -30,7 +30,6 @@ This project is a blueprint for building a __production-ready full-stack applica
 3. [Features](#features)
 4. [Tech Stack](#tech-stack)
 5. [Docker Setup](#docker-setup)
-    * [Docker Guide](#additional-docker-documentation)
 6. [Manual Installation](#manual-installation)
 7. [API Reference](#api-reference)
     * [Authentication](#authentication)
