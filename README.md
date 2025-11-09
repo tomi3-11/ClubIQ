@@ -1,25 +1,26 @@
 # **Club IQ**
 
 <p align='center'>
-<img src="https://img.shields.io/badge/Python-3.10+-blue?logo=python" alt="Python">
-<img src="https://img.shields.io/badge/Flask-Backend-black?logo=flask" alt="Flask">
-<img src="https://img.shields.io/badge/Next.js-Frontend-black?logo=nextdotjs" alt="Next.js">
-<img src="https://img.shields.io/badge/PostgreSQL-Database-336791?logo=postgresql" alt="PostgreSQL">
-<img src="https://img.shields.io/badge/License-MIT-green" alt="License">
+<img src="https://img.shields.io/badge/Python-3.10+-blue?logo=python">
+<img src="https://img.shields.io/badge/Flask-Backend-black?logo=flask">
+<img src="https://img.shields.io/badge/Next.js-Frontend-black?logo=nextdotjs">
+<img src="https://img.shields.io/badge/PostgreSQL-Database-336791?logo=postgresql">
+<img src="https://img.shields.io/badge/License-MIT-green">
 </p>
 
 ---
 
 # **Overview**
 
-**Club IQ** is a modern full-stack platform for club management — handling members, events, attendance, authentication, and more.
-The system is split into two clean components:
+**Club IQ** is a full-stack platform for managing clubs: members, events, attendance, authentication, and more.
 
-* ✅ **Flask REST API** backend
+It includes:
+
+* ✅ **Flask REST API**
 * ✅ **Next.js frontend**
-* ✅ **PostgreSQL database** for strong relational structure
-* ✅ Dockerized environment for consistent development
-* ✅ Scalable architecture designed for real clubs and organizations
+* ✅ **PostgreSQL** relational DB
+* ✅ Full Docker environment
+* ✅ Scalable architecture for real-world clubs and organizations
 
 ---
 
@@ -40,13 +41,13 @@ The system is split into two clean components:
 
 ```
 ClubIQ/
-│── Backend/          # Flask backend
+│── Backend/
 │   ├── app/
 │   ├── instance/
 │   ├── Config.py
 │   ├── requirements.txt
 │
-│── Frontend/         # Next.js frontend
+│── Frontend/
 │   ├── app/
 │   ├── package.json
 │   ├── next.config.mjs
@@ -61,28 +62,27 @@ ClubIQ/
 
 # **Setup & Installation**
 
-This project supports **Windows**, **WSL**, and **Linux**.
-Follow each step IN ORDER — or you’ll spend 3 hours debugging what should’ve taken 30 seconds.
+Works on **Windows**, **WSL**, and **Linux**.
+Follow the steps as listed — skipping ahead is how people summon bugs from the abyss.
 
 ---
 
 # ✅ **STEP 1 — Install Docker Desktop**
 
-Download:
-**[https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/)**
+Download: [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/)
 
 During installation:
-✅ Enable **Hyper-V / Virtualization**
-✅ Enable **WSL2 backend**
 
-If Docker can’t run containers, nothing else matters.
+* ✅ Enable Hyper-V / Virtualization
+* ✅ Enable WSL2 backend
+
+If Docker isn’t running, nothing else will.
 
 ---
 
 # ✅ **STEP 2 — (Recommended) Setup Node in WSL using NVM**
 
-If you're on Windows, develop in **WSL**, not PowerShell.
-It avoids path conflict nightmares with npm, Next.js, and node-gyp.
+On Windows, use **WSL** for Node development or you’ll meet npm’s mood swings.
 
 ### Install NVM
 
@@ -98,7 +98,7 @@ nvm install --lts
 nvm use --lts
 ```
 
-### Confirm WSL versions (not Windows)
+### Verify WSL paths
 
 ```bash
 which node
@@ -107,18 +107,17 @@ node -v
 npm -v
 ```
 
-Paths should start with `/usr/bin` or your WSL home.
+Paths must **not** point to Windows directories.
 
 ---
 
 # ✅ **STEP 3 — Install Make (Windows only)**
 
-If you’re using Windows without WSL, install GNU Make:
+If you're developing outside WSL:
 
-**[https://gnuwin32.sourceforge.net/downlinks/make.php](https://gnuwin32.sourceforge.net/downlinks/make.php)**
+Download GNU Make: [https://gnuwin32.sourceforge.net/downlinks/make.php](https://gnuwin32.sourceforge.net/downlinks/make.php)
 
-Then add it to PATH.
-Test it:
+Add to PATH, then verify:
 
 ```bash
 make help
@@ -128,15 +127,15 @@ make help
 
 # ✅ **STEP 4 — Using the Makefile**
 
-The Makefile simplifies common Docker operations:
+The Makefile wraps common Docker commands.
 
-### Build all containers
+### Build all services
 
 ```bash
 make build
 ```
 
-### Start services (attached)
+### Run containers (attached)
 
 ```bash
 make up
@@ -154,14 +153,14 @@ make up-d
 make logs
 ```
 
-### Shell inside containers
+### Enter containers
 
 ```bash
 make front
 make back
 ```
 
-### Clean everything
+### Clean up
 
 ```bash
 make clean
@@ -169,27 +168,27 @@ make clean
 
 ---
 
-# ✅ Backend Setup
+# ✅ **Backend Setup**
 
 ```bash
 cd Backend
 
 python -m venv venv
 
-# Activate
-source venv/bin/activate          # Linux/macOS/WSL
-venv\Scripts\activate             # Windows
+# Activate:
+source venv/bin/activate      # Linux/macOS/WSL
+venv\Scripts\activate         # Windows
 
 pip install -r requirements.txt
 
 flask run
 ```
 
-Environment variables are managed via `.env` inside `instance/`.
+Environment variables live in `instance/.env`.
 
 ---
 
-# ✅ Frontend Setup (Next.js)
+# ✅ **Frontend Setup (Next.js)**
 
 ```bash
 cd Frontend
@@ -198,7 +197,8 @@ npm install
 npm run dev
 ```
 
-Your UI lives at:
+Frontend runs on:
+
 [http://localhost:3000](http://localhost:3000)
 
 ---
@@ -210,6 +210,8 @@ Your UI lives at:
 * Dev: `http://localhost:5000/api`
 * Prod: `https://yourdomain.com/api`
 
+---
+
 ### Authentication Example
 
 **POST** `/login`
@@ -218,8 +220,8 @@ Request:
 
 ```json
 {
-    "email": "tomi@example.com",
-    "password": "mysecretpassword"
+  "email": "tomi@example.com",
+  "password": "mysecretpassword"
 }
 ```
 
@@ -227,10 +229,12 @@ Response:
 
 ```json
 {
-    "access_token": "jwt_token_string",
-    "token_type": "Bearer"
+  "access_token": "jwt_token_string",
+  "token_type": "Bearer"
 }
 ```
+
+---
 
 ### Members Example
 
@@ -245,7 +249,7 @@ Response:
 
 ```json
 [
-    {"id": 1, "name": "Tom", "email": "tom@example.com"}
+  { "id": 1, "name": "Tom", "email": "tom@example.com" }
 ]
 ```
 
@@ -268,42 +272,47 @@ Coming soon.
 
 # **Contribution Guide**
 
-All contributors must follow the workflow below.
-
+The workflow is centered around **cloning main first**.
 ---
 
-## ✅ **Developer Workflow**
+## ✅ **Developer Workflow (Contributor-First)**
 
-### **1. Pull latest main**
+### **1. Clone the repository**
+
+```bash
+git clone https://github.com/USIU-ClubIQ/ClubIQ.git
+cd ClubIQ
+```
+
+### **2. Switch to main and pull latest**
 
 ```bash
 git checkout main
 git pull origin main
 ```
 
-### **2. Create your feature branch**
+### **3. Create a feature branch**
 
 ```bash
 git checkout -b feature/<task-name>
 ```
 
-### **3. Code → Commit → Push frequently**
+### **4. Work → Commit → Push**
 
 ```bash
 git add .
-git commit -m "Implement <feature name>"
+git commit -m "Implement <feature>"
 git push origin feature/<task-name>
 ```
 
-### **4. Open a Pull Request**
+### **5. Open a Pull Request**
 
-* PR: your branch → `main`
-* Assign your team lead
-* Clear title
-* Short description of what changed
+* PR from your `feature/<task-name>` → `main`
+* Add a short description
+* Assign team lead
 
 ---
 
 # **License**
 
-Distributed under the MIT License.
+MIT License.
