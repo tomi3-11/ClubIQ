@@ -14,9 +14,8 @@ help:
 	@echo "$(YELLOW)ClubIQ Development Environment$(NC)"
 	@echo "--------------------------------"
 	@echo "Usage:"
-	@echo "  make build              - Build and start all containers"
-	@echo "  make up                 - Start all containers (attached)"
-	@echo "  make up-d               - Start all containers (detached)"
+	@echo "  make build              - Build and start all containers (detached)"
+	@echo "  make up                 - Start all containers (detached)"
 	@echo "  make down               - Stop all containers"
 	@echo "  make rebuild            - Force rebuild and recreate containers"
 	@echo "  make logs               - View live logs"
@@ -28,19 +27,15 @@ help:
 
 build:
 	@echo "$(GREEN)Building ClubIQ containers...$(NC)"
-	docker compose -f $(COMPOSE_FILE) up --build
+	docker compose -f $(COMPOSE_FILE) up -d --build
 
 up:
 	@echo "$(GREEN)Starting ClubIQ containers...$(NC)"
-	docker compose -f $(COMPOSE_FILE) up
-
-up-d:
-	@echo "$(GREEN)Starting ClubIQ containers in detached mode...$(NC)"
-	docker compose -f $(COMPOSE_FILE) up -d
+	(docker start clubiq_backend; docker start clubiq_frontend; docker start clubiq_db)
 
 down:
 	@echo "$(YELLOW)Stopping containers...$(NC)"
-	docker compose -f $(COMPOSE_FILE) down
+	(docker stop clubiq_backend; docker stop clubiq_frontend; docker stop clubiq_db)
 
 rebuild:
 	@echo "$(YELLOW)Rebuilding containers...$(NC)"
