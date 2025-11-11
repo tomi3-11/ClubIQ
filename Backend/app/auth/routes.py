@@ -4,6 +4,8 @@ import jwt
 from functools import wraps
 import time
 import os
+from app.models import Club_member
+from app import db
 
 CLERK_SECRET_KEY = os.environ.get('CLERK_SECRET_KEY')
 CLERK_JWKS_URL = os.environ.get('CLERK_JWKS_URL')
@@ -110,18 +112,21 @@ def sync_user():
         user_id = data.get("id")
         email = data.get("email")
         username = data.get("username")
-        # last_name = data.get("last_name")
         print("reached")
 
-        # Example logic (you can later integrate with your DB here)
+        # Getting information from the frontend.
         synced_user = {
             "clerk_user_id": user_id,
             "email": email,
             "username": username,
-            # "last_name": last_name,
             "verified_via": "Clerk"
         }
 
+        # Adding user credencials to the database 
+        db.session.add(sync_user)
+        db.session.commit()
+        
+        
         return jsonify({
             "message": "User synced successfully",
             "user": synced_user,
