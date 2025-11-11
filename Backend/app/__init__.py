@@ -40,13 +40,14 @@ def create_app(config_class=Config):
     
     # Register blueprints for modularity
     from app.members.routes import members_bp
-    #from app.events.routes import events_bp
     from app.core.routes import core_bp
     from app.auth.routes import auth_bp
+    from app.clubs import clubs_bp
     
     app.register_blueprint(members_bp)
     app.register_blueprint(core_bp)
     app.register_blueprint(auth_bp)
-     
+    app.register_blueprint(clubs_bp)
+
     
     return app
