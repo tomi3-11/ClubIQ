@@ -220,7 +220,7 @@ Request:
 
 ```json
 {
-  "email": "tomi@example.com",
+  "email": "tom@example.com",
   "password": "mysecretpassword"
 }
 ```
@@ -275,9 +275,11 @@ Coming soon.
 The workflow is centered around **cloning main first**.
 ---
 
-## ✅ **Developer Workflow (Contributor-First)**
+## **Developer Workflow (Contributor-First)**
 
-### **1. Clone the repository**
+### **1. Fork the repository**
+> **NOTE** : __Fork the repository then clone it from your side__. <br>
+> For better practices, **DON'T** clone the repository directly from here...
 
 ```bash
 git clone https://github.com/USIU-ClubIQ/ClubIQ.git
