@@ -31,11 +31,15 @@ build:
 
 up:
 	@echo "$(GREEN)Starting ClubIQ containers...$(NC)"
-	(docker start clubiq_backend; docker start clubiq_frontend; docker start clubiq_db)
+	docker start clubiq_backend
+	docker start clubiq_frontend 
+	docker start clubiq_db
 
 down:
 	@echo "$(YELLOW)Stopping containers...$(NC)"
-	(docker stop clubiq_backend; docker stop clubiq_frontend; docker stop clubiq_db)
+	docker stop clubiq_backend 
+	docker stop clubiq_frontend 
+	docker stop clubiq_db
 
 rebuild:
 	@echo "$(YELLOW)Rebuilding containers...$(NC)"
