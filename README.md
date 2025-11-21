@@ -12,7 +12,7 @@
 
 # **Overview**
 
-**Club IQ** is a full-stack platform for managing clubs: members, events, attendance, authentication, and more.
+**Club IQS** is a full-stack platform for managing clubs: members, events, attendance, authentication, and more.
 
 It includes:
 
