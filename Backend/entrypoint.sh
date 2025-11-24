@@ -11,8 +11,6 @@ export PYTHONPATH=/app
 
 # Set up database migrations
 echo "Running database migrations..."
-flask db init || true
-flask db migrate -m "auto migration" || true
 flask db upgrade || true
 
 # Start the Flask development server
