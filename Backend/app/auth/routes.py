@@ -15,7 +15,7 @@ def sync_user():
     Synchronize Clerk-authenticated user data with the backend.
     Expected payload from frontend:
     {
-        "id": "user_abc123",
+        "clerk_id": "user_abc123",
         "email": "example@mail.com",
         "first_name": "John",
         "last_name": "Doe"
