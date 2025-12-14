@@ -82,7 +82,7 @@ During installation:
 
 After installation, make sure the **Docker Daemon / docker.service** is running in the background otherwise **none** of the make or docker commands will work.
 
-**Note: Using Docker Desktop is completely optional but is recommended since it makes it easy to manage your containers.**
+**Note: Using Docker Desktop / Podman Desktop is completely optional but is recommended since it makes it easy to manage your containers.**
 
 ---
 
@@ -119,11 +119,11 @@ Paths must **not** point to Windows directories.
 
 # ✅ **Step 3 — Install Make**
 
-The Makefile wraps common Docker commands.
+The Makefile wraps common Docker commands. The utility is part of **GnuMake** so don't get alarmed if you don't see make by itself.
 
 ## Windows
 
-Download and install the make utility from: [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/)
+Download and install the make utility from: [SourceForge](https://sourceforge.net/projects/gnuwin32/files/make/3.81/make-3.81.exe/download?use_mirror=yer&download)
 
 Add to PATH, then verify:
 
