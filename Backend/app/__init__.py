@@ -43,10 +43,12 @@ def create_app(config_class=Config):
     #from app.events.routes import events_bp
     from app.core.routes import core_bp
     from app.auth.routes import auth_bp
+    from app.rating.routes import ratings_bp
     
     app.register_blueprint(members_bp)
     app.register_blueprint(core_bp)
     app.register_blueprint(auth_bp)
+    app.register_blueprint(ratings_bp)
      
     
     return app
