@@ -41,5 +41,5 @@ class AuthService:
             "email": user.email,
             "username": user.username,
             "role": user.role,
-            "created_at": user.created_at.isoformat(),
+            "created_at": user.created_at.isoformat()
         }, 200
