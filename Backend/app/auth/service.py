@@ -16,9 +16,9 @@ class AuthService:
         username = data.get("username")
         
         synced_user = User(
-            "clerk_user_id": user_id,
-            "email": email,
-            "username": username
+            id=user_id,
+            email=email,
+            username=username
         )
         
         # Add tot the db
