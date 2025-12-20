@@ -8,34 +8,34 @@ api = Api(auth_bp)
 
 
 class SyncUserResource(Resource):
-    def post():
+    def post(self):
         try:
             data = request.get_json()
             response, status = AuthService.sync_user(data)
             return response, status
         except Exception as e:
-            return jsonify({"message": "Error syncing user", "error": str(e)}), 500
+            return {"message": "Error syncing user", "error": str(e)}, 500
     
     
 class ProfileResource(Resource):
     def get(self, user_id):
         user = User.query.get_or_404(user_id)
-        return jsonify({
+        return {
             "id": user.id,
             "clerk_id": user.clerk_id,
             "email": user.email,
             "username": user.username,
             "role": user.role,
             "created_at": user.created_at.isoformat()
-        }), 200
+        }, 200
         
 
 # This does nothing other than just test the endpoints are work well       
 class TestRoutesResource(Resource):
-    def get():
-        return jsonify({
+    def get(self):
+        return {
             "message": "Auth routes working!"
-        }), 200
+        }, 200
         
         
         
