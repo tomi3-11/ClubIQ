@@ -5,7 +5,7 @@ from app.models import User
 class AuthService:
     
     @staticmethod
-    def sync_user(self, data):
+    def sync_user(data):
         if not data:
             return {
                 "message": "No user data provided"
@@ -31,15 +31,3 @@ class AuthService:
             "verified_via": "Clerk"
         }, 200
         
-        
-    @staticmethod
-    def profile(self, user_id):
-        user = User.query.get_or_404(user_id).first()
-        return {
-            "id": user.id,
-            "clerk_id": user.clerk_id,
-            "email": user.email,
-            "username": user.username,
-            "role": user.role,
-            "created_at": user.created_at.isoformat()
-        }, 200
