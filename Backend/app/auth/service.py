@@ -24,7 +24,8 @@ class AuthService:
             clerk_id=data.get("clerk_id"),
             name=data.get("name"),
             email=data.get("email"),
-            username=data.get("username")
+            username=data.get("username"),
+            role=data.get("role")
         )
         
         # Add tot the db
