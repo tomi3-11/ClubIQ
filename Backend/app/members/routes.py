@@ -1,7 +1,7 @@
 from flask import request, Blueprint
 from flask_restful import Resource, Api
 # from app.members import members_bp
-from app import api, db, csrf
+from app import api, db
 from app.models import Club_member, User
 from app.forms import MemberForm
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -10,7 +10,7 @@ from functools import wraps
 members_bp = Blueprint("members", __name__, url_prefix="/api/members")
 api = Api(members_bp)
 
-csrf.exempt(members_bp)
+# csrf.exempt(members_bp)
 
 
 def requires_roles(*roles):
