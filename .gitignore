@@ -19,3 +19,4 @@ instance
 .pytest_cache
 node_modules/
 .next/
+club/

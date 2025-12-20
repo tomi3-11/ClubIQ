@@ -42,12 +42,21 @@ export default async function LandingPage() {
               <button className='text-gray-600 hover:text-gray-900 transition-colors px-3 py-2'>
                 About
               </button>
+             {
+             user ? 
+              <Link 
+                  href="/sso" 
+                  className='px-4 py-2 border-2 border-gray-200 rounded-lg hover:bg-gray-100 transition-colors font-medium'>
+                Go to Dashboard
+              </Link> 
+             : 
               <Link
-                href={"/auth/sign-in"}
-                className='px-4 py-2 border-2 border-gray-200 rounded-lg hover:bg-gray-100 transition-colors font-medium'
-              >
-                Log In
-              </Link>
+                  href={"/auth/sign-in"}
+                  className='px-4 py-2 border-2 border-gray-200 rounded-lg hover:bg-gray-100 transition-colors font-medium'
+                >
+                  Log In
+                </Link>
+              }
             </div>
           </div>
         </div>

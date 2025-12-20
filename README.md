@@ -5,6 +5,8 @@
 <img src="https://img.shields.io/badge/Flask-Backend-black?logo=flask">
 <img src="https://img.shields.io/badge/Next.js-Frontend-black?logo=nextdotjs">
 <img src="https://img.shields.io/badge/PostgreSQL-Database-336791?logo=postgresql">
+<img src="https://img.shields.io/badge/Docker-Containerized-blue?logo=docker">
+<img src="https://img.shields.io/badge/Clerk-Authentication-4F46E5?logo=clerk">
 <img src="https://img.shields.io/badge/License-MIT-green">
 </p>
 
@@ -12,15 +14,16 @@
 
 # **Overview**
 
-**Club IQ** is a full-stack platform for managing clubs: members, events, attendance, authentication, and more.
+**Club IQS** is a full-stack platform for managing clubs: members, events, attendance, authentication, and more.
 
 It includes:
 
-* ✅ **Flask REST API**
-* ✅ **Next.js frontend**
-* ✅ **PostgreSQL** relational DB
-* ✅ Full Docker environment
-* ✅ Scalable architecture for real-world clubs and organizations
+* **Flask REST API**
+* **Next.js frontend**
+* **PostgreSQL** relational DB
+* Full **Docker** environment
+* **Clerk** authentication
+* **Scalable architecture** for real-world clubs and organizations
 
 ---
 
@@ -52,7 +55,7 @@ ClubIQ/
 │   ├── package.json
 │   ├── next.config.mjs
 │
-│── docker-compose.dev.yml
+│── docker-compose.yml
 │── Makefile
 │── README.md
 │── .gitignore
@@ -62,25 +65,28 @@ ClubIQ/
 
 # **Setup & Installation**
 
-Works on **Windows**, **WSL**, and **Linux**.
+Works on **Windows**, and **Linux**.
 Follow the steps as listed — skipping ahead is how people summon bugs from the abyss.
 
 ---
 
-# ✅ **STEP 1 — Install Docker Desktop**
+# ✅ **Step 1 — Install Docker**
+We recommend installing **Docker Desktop** as it not only installs Docker Desktop but also the **Docker Engine, Docker CLI, and Docker Compose.**
 
 Download: [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/)
 
 During installation:
 
-* ✅ Enable Hyper-V / Virtualization
-* ✅ Enable WSL2 backend
+* Enable **Hyper-V / Virtualization**
+* Enable **WSL2** backend
 
-If Docker isn’t running, nothing else will.
+After installation, make sure the **Docker Daemon / docker.service** is running in the background otherwise **none** of the make or docker commands will work.
+
+**Note: Using Docker Desktop / Podman Desktop is completely optional but is recommended since it makes it easy to manage your containers.**
 
 ---
 
-# ✅ **STEP 2 — (Recommended) Setup Node in WSL using NVM**
+# ✅ **Step 2 — (Recommended) Setup Node in WSL using NVM**
 
 On Windows, use **WSL** for Node development or you’ll meet npm’s mood swings.
 
@@ -111,64 +117,81 @@ Paths must **not** point to Windows directories.
 
 ---
 
-# ✅ **STEP 3 — Install Make (Windows only)**
+# ✅ **Step 3 — Install Make**
 
-If you're developing outside WSL:
+The Makefile wraps common Docker commands. The utility is part of **GnuMake** so don't get alarmed if you don't see make by itself.
 
-Download GNU Make: [https://gnuwin32.sourceforge.net/downlinks/make.php](https://gnuwin32.sourceforge.net/downlinks/make.php)
+## Windows
+
+Download and install the make utility from: [SourceForge](https://sourceforge.net/projects/gnuwin32/files/make/3.81/make-3.81.exe/download?use_mirror=yer&download)
 
 Add to PATH, then verify:
 
 ```bash
-make help
+make --version
 ```
 
+## Linux / macOS
+
+Install the make utility via your distro's package manager. For instance:
+
+* macOS:
+
+```bash
+brew install make
+```
+
+* Debian / Ubuntu:
+
+```bash
+sudo apt install make
+```
+
+* Fedora:
+
+```bash
+sudo dnf install make
+```
+
+* Arch Linux:
+
+```bash
+sudo pacman -S make
+```
+
+* NixOS:
+
+```bash
+sudo nix.env -iA nixos.gnumake
+```
 ---
 
-# ✅ **STEP 4 — Using the Makefile**
+# ✅ **Step 4 — Creating the Containers**
 
-The Makefile wraps common Docker commands.
-
-### Build all services
+View the our [**Docker.md**](./Docker.md) file for the full installation steps.
+### Build all services:
 
 ```bash
 make build
 ```
 
-### Run containers (attached)
+### Run containers (attached):
 
 ```bash
 make up
 ```
 
-### Detached mode
+### Detached mode:
 
 ```bash
-make up-d
-```
-
-### Logs
-
-```bash
-make logs
-```
-
-### Enter containers
-
-```bash
-make front
-make back
-```
-
-### Clean up
-
-```bash
-make clean
+make up-detached
 ```
 
 ---
 
-# ✅ **Backend Setup**
+# ✅ **Manual Setup**
+
+If you want to setup the project without using Docker:
 
 ```bash
 cd Backend
@@ -176,7 +199,7 @@ cd Backend
 python -m venv venv
 
 # Activate:
-source venv/bin/activate      # Linux/macOS/WSL
+source venv/bin/activate      # Linux/macOS
 venv\Scripts\activate         # Windows
 
 pip install -r requirements.txt

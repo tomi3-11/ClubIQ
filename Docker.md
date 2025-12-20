@@ -77,7 +77,6 @@ Then open both `.env` files and replace values as needed:
 # Flask settings
 FLASK_APP=run.py
 FLASK_ENV=development
-SECRET_KEY=your-secret-key-here
 
 # Database settings
 DATABASE_URL=postgresql://postgres:postgres@db:5432/clubiq
@@ -122,55 +121,33 @@ Visit your app at:
 * **Frontend:** [http://localhost:3000](http://localhost:3000)
 * **Backend API:** [http://localhost:5000](http://localhost:5000)
 
----
+To view the full list of commands provided through the Make file, run:
 
-## 6. Make Cheatsheet
-
-| Command        | Description                                  |
-| -------------- | -------------------------------------------- |
-| `make build`   | Build and start containers                   |
-| `make up`      | Start all containers                         |
-| `make down`    | Stop all containers                          |
-| `make rebuild` | Rebuild all containers from scratch          |
-| `make logs`    | View combined container logs                 |
-| `make front`   | Access a shell inside the frontend container |
-| `make back`   | Access a shell inside the backend container   |
-| `make migrate` | Manually run Flask migrations                |
-| `make clean`   | Remove all containers, networks, and volumes |
+```bash
+make help
+```
 
 ---
 
-## 7. Manual Docker Commands
+## 6. Manual Docker Commands
 
 If you don’t have `make` installed:
 
 ```bash
-docker compose -f docker-compose.dev.yml up --build
-docker compose -f docker-compose.dev.yml down
-docker compose -f docker-compose.dev.yml exec backend flask db upgrade
+docker compose up --build
+docker compose down
+docker compose exec backend flask db upgrade
 ```
 
 ---
 
-## 8. Persistent Database Volume
-
-The PostgreSQL service stores data in a Docker-managed volume called `pgdata`.
-To reset your database completely (including schema and seed data):
-
-```bash
-make clean
-make build
-```
-
----
-
-## 9. Possible Issues
+## 7. Possible Issues
 
 | Problem                                         | Fix                                                              |
 | ----------------------------------------------- | ---------------------------------------------------------------- |
 | Containers build but backend crashes on startup | Check `.env` and ensure `DATABASE_URL` matches service name `db` |
 | Frontend can’t reach API                        | Confirm `NEXT_PUBLIC_API_URL=http://localhost:5000`              |
 | Migrations not running                          | Run `make migrate` manually inside backend container             |
-| Database persists unwanted data                 | Run `make clean` to reset Postgres volume                        |
+| Database persists unwanted data                 | Run `make down` to reset Postgres volume                        |
 
 ---
