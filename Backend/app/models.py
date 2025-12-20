@@ -8,6 +8,7 @@ class User(db.Model):
     """
     User model to store user information.
     """
+    __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     clerk_id = db.Column(db.String(50), unique=True, nullable=False)
     name = db.Column(db.String(50), nullable=False)
@@ -17,6 +18,19 @@ class User(db.Model):
     role = db.Column(db.String(50), nullable=False, default='user')
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
+    
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "clerk_id": self.clerk_id,
+            "name": self.name,
+            "email": self.email,
+            "username": self.username,
+            "role": self.role,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
+        }
+
 
     def __repr__(self):
         return f'<User {self.username}>'
@@ -25,10 +39,12 @@ class Club(db.Model):
     """
     Club model to store club information.
     """ 
+    __tablename__ = "clubs"
+
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = db.Column(db.String(60), unique=True, nullable=False)
     description = db.Column(db.Text, nullable=True)
-    created_by = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
+    created_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
 
@@ -39,9 +55,11 @@ class Club_member(db.Model):
     """
     Club Member model to store membership information.
     """
+    __tablename__ = "clubmembers"
+
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    club_id = db.Column(UUID(as_uuid=True), db.ForeignKey('Club.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
+    club_id = db.Column(UUID(as_uuid=True), db.ForeignKey('clubs.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     role = db.Column(db.String(50), nullable=False, default='member')
     joined_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
@@ -52,8 +70,10 @@ class Activity(db.Model):
     """
     Activity model to store activity information.
     """
+    __tablename__ = "activities"
+
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    club_id = db.Column(UUID(as_uuid=True), db.ForeignKey('Club.id'), nullable=False)
+    club_id = db.Column(UUID(as_uuid=True), db.ForeignKey('clubs.id'), nullable=False)
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=True)
     start_date = db.Column(db.DateTime, nullable=True)
@@ -67,11 +87,13 @@ class Task(db.Model):
     """
     Task model to store task information.       
     """
+    __tablename__ = "tasks"
+
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    activity_id = db.Column(UUID(as_uuid=True), db.ForeignKey('Activity.id'), nullable=False)
+    activity_id = db.Column(UUID(as_uuid=True), db.ForeignKey('activities.id'), nullable=False)
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=True)
-    assigned_to = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=True)
+    assigned_to = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
     status = db.Column(db.String(50), nullable=False, default='pending')
     due_date = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
@@ -83,10 +105,12 @@ class Rating(db.Model):
     """
     Rating model to store task ratings.
     """
+    __tablename__ = "ratings"
+
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    task_id = db.Column(UUID(as_uuid=True), db.ForeignKey('Task.id'), nullable=False)
-    rated_user = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
-    rated_by = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
+    task_id = db.Column(UUID(as_uuid=True), db.ForeignKey('tasks.id'), nullable=False)
+    rated_user = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    rated_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     score = db.Column(db.Integer, nullable=False)
     comments = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
@@ -98,9 +122,11 @@ class Invitation(db.Model):
     """
     Invitation model to store invitation information.
     """
+    __tablename__ = "invitations"
+
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     email = db.Column(db.String(120), nullable=False)
-    invited_by = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
+    invited_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     token = db.Column(db.String(200), unique=True, nullable=False)
     status = db.Column(db.String(50), nullable=False, default='pending')
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
