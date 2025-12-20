@@ -1,5 +1,5 @@
 from app import db
-from app.models import Club_member, User
+from app.models import User
 
 
 class AuthService:
