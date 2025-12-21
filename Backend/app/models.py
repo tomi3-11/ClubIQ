@@ -73,13 +73,26 @@ class Activity(db.Model):
     __tablename__ = "activities"
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    club_id = db.Column(UUID(as_uuid=True), db.ForeignKey('clubs.id'), nullable=False)
+    club_id = db.Column(UUID(as_uuid=True), db.ForeignKey('clubs.id'), nullable=True) # Nullable False to be implemented some other time.
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=True)
-    start_date = db.Column(db.DateTime, nullable=True)
+    start_date = db.Column(db.DateTime, default=datetime.datetime.utcnow, nullable=True)
     end_date = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    author_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True) # Nullable False to be implemented some other time.
 
+    author = db.relationship("User", backref="activities")
+    
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "club_id": self.club_id,
+            "title": self.title,
+            "description": self.description,
+            "start_date": self.start_date.isoformat(),
+            "created_at": self.created_at.isoformat()
+        }
+    
     def __repr__(self):
         return f'<Activity {self.title}>'
 
@@ -97,6 +110,7 @@ class Task(db.Model):
     status = db.Column(db.String(50), nullable=False, default='pending')
     due_date = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    
 
     def __repr__(self):
         return f'<Task {self.title} Assigned to {self.assigned_to} Status {self.status}>'
