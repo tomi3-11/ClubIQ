@@ -44,13 +44,14 @@ def create_app(config_class=Config):
     from app.auth.routes import auth_bp
     from app.rating.routes import ratings_bp
     from app.clubs import clubs_bp
+    from app.activities import activities_bp
     
     app.register_blueprint(members_bp)
     app.register_blueprint(core_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(ratings_bp)
-     
     app.register_blueprint(clubs_bp)
+    app.register_blueprint(activities_bp)
 
     
     return app
