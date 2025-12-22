@@ -41,7 +41,7 @@ def create_app(config_class=Config):
     # Register blueprints for modularity
     from app.members.routes import members_bp
     from app.core.routes import core_bp
-    from app.auth.routes import auth_bp
+    from app.auth import auth_bp
     from app.rating.routes import ratings_bp
     from app.clubs import clubs_bp
     from app.activities import activities_bp
