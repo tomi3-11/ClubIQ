@@ -2,7 +2,8 @@ import datetime
 from app import db
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
-from werkzeug.security import generate_password_hash, check_password_hash
+from enum import Enum
+
 
 class User(db.Model):
     """
@@ -48,10 +49,18 @@ class Club(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow, onupdate=datetime.datetime.utcnow)
 
+    members = db.relationship(
+        "ClubMember", backref="club", lazy="dynamic"
+    )
+    
+    activities = db.relationship(
+        "Activity", backref="club", lazy="dynamic"
+    )
+    
     def __repr__(self):
         return f'<Club {self.name}>'
 
-class Club_member(db.Model):
+class ClubMember(db.Model):
     """
     Club Member model to store membership information.
     """
@@ -62,6 +71,18 @@ class Club_member(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     role = db.Column(db.String(50), nullable=False, default='member')
     joined_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    
+    user = db.relationship("User", backref="clubmembers")
+    
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "club_id": self.club_id,
+            "user_id": self.user_id,
+            "username": self.user.username if self.user else None,
+            "role": self.role,
+            "joined_at": self.joined_at.isoformat() if self.joined_at else None
+        }
 
     def __repr__(self): 
         return f'<ClubMember UserID: {self.user_id} ClubID: {self.club_id}>'
@@ -82,19 +103,28 @@ class Activity(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True) # Nullable False to be implemented some other time.
 
     author = db.relationship("User", backref="activities")
+    tasks = db.relationship("Task", backref="activity", lazy="dynamic")
     
     def to_dict(self):
         return {
-            "id": self.id,
-            "club_id": self.club_id,
+            "id": str(self.id),
+            "club_id": str(self.club_id),
             "title": self.title,
             "description": self.description,
-            "start_date": self.start_date.isoformat(),
-            "created_at": self.created_at.isoformat()
+            "start_date": self.start_date.isoformat() if self.start_date else None,
+            "end_date": self.end_date.isoformat() if self.end_date else None,
+            "author_id": self.author_id,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
         }
     
     def __repr__(self):
         return f'<Activity {self.title}>'
+    
+    
+class TaskStatusEnum(Enum):
+    pending = "pending"
+    in_progress = "in_progress"
+    completed = "completed"
 
 class Task(db.Model):
     """
@@ -107,10 +137,28 @@ class Task(db.Model):
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=True)
     assigned_to = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
-    status = db.Column(db.String(50), nullable=False, default='pending')
+    status = db.Column(
+        db.Enum(TaskStatusEnum, name="task_status"),
+        nullable=False,
+        default=TaskStatusEnum.pending,
+    )
     due_date = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     
+    assignee = db.relationship("User", backref="assigned_tasks", foreign_keys=[assigned_to])
+    ratings = db.relationship("Rating", backref="task", lazy="dynamic")
+    
+    def to_dict(self):
+        return {
+            "id": str(self.id),
+            "activity_id": str(self.activity_id),
+            "title": self.title,
+            "description": self.description,
+            "assigned_to": self.assigned_to,
+            "status": self.status.value,
+            "due_date": self.due_date.isoformat() if self.due_date else None,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+        }
 
     def __repr__(self):
         return f'<Task {self.title} Assigned to {self.assigned_to} Status {self.status}>'
@@ -123,12 +171,26 @@ class Rating(db.Model):
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     task_id = db.Column(UUID(as_uuid=True), db.ForeignKey('tasks.id'), nullable=False)
-    rated_user = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    rated_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    rated_user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    rated_by_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     score = db.Column(db.Integer, nullable=False)
     comments = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
+    rated_user = db.relationship("User", backref="received_ratings", foreign_keys=[rated_user_id])
+    rated_by = db.relationship("User", backref="given_ratings", foreign_keys=[rated_by_id])
+    
+    def to_dict(self):
+        return {
+            "id": str(self.id),
+            "task_id": str(self.task_id),
+            "rated_user_id": self.rated_user_id,
+            "rated_by_id": self.rated_by_id,
+            "score": self.score,
+            "comments": self.comments,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+        }
+    
     def __repr__(self):
         return f'<Rating TaskID: {self.task_id} User: {self.rated_user} Score: {self.score}>'
 
@@ -145,6 +207,8 @@ class Invitation(db.Model):
     status = db.Column(db.String(50), nullable=False, default='pending')
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     expirers_at = db.Column(db.DateTime, nullable=True)
+    
+    inviter = db.relationship("User", backref="sent_invitations")
 
     def __repr__(self):
         return f'<Invitation {self.email} Status: {self.status}>'
