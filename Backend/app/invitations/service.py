@@ -1,8 +1,9 @@
 from app.models import Invitation, InitationStatusEnum
 import secrets
-from app import db
+from app import db, mail
 from datetime import datetime
-import uuid
+from flask_mail import Message
+
 
 
 class InvitationService:
@@ -61,5 +62,49 @@ class InvitationService:
         db.session.commit()
         return invitation.to_dict()
     
+    @staticmethod
+    def send_invitation_email(email, token):
+        invite_link = f"https:localhost:8000/invitations/accept/{token}"
+        
+        body = f"""
+        Hello,
+
+        You have been invited to join a club.
+
+        Click the link below to accept the invitatio:
+        {invite_link}
+
+        Best regards
+        ClubIQ Management System
+        """
+        
+        EmailService.send_email(
+            subject="You are Invited to join a Club",
+            recipients=[email],
+            body=body
+        )
+
+
+
+
+class EmailService:
+    """
+    Class for EmailService: This handles the sending of email during invitation.
+    """
+    @staticmethod
+    def send_email(subject, recipients, body):
+        """
+        Docstring for send_email
+        
+        :param subject: This is the email subject
+        :param recipients: This the email of the person recieving the mail 
+        :param body: This is also know as the content of the email.
+        """
+        msg = Message(
+            subject=subject,
+            recipients=recipients,
+            body=body
+        )
+        mail.send(msg)
     
     
