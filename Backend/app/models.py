@@ -193,6 +193,12 @@ class Rating(db.Model):
     
     def __repr__(self):
         return f'<Rating TaskID: {self.task_id} User: {self.rated_user} Score: {self.score}>'
+    
+    
+class InitationStatusEnum(Enum):
+    pending = "pending"
+    in_progress = "in_progress"
+    accepted = "accepted"
 
 class Invitation(db.Model):
     """
