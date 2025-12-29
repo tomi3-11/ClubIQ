@@ -195,7 +195,7 @@ class Rating(db.Model):
         return f'<Rating TaskID: {self.task_id} User: {self.rated_user} Score: {self.score}>'
     
     
-class InitationStatusEnum(Enum):
+class InvitationStatusEnum(Enum):
     pending = "pending"
     in_progress = "in_progress"
     accepted = "accepted"
