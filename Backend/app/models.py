@@ -193,6 +193,12 @@ class Rating(db.Model):
     
     def __repr__(self):
         return f'<Rating TaskID: {self.task_id} User: {self.rated_user} Score: {self.score}>'
+    
+    
+class InvitationStatusEnum(Enum):
+    pending = "pending"
+    in_progress = "in_progress"
+    accepted = "accepted"
 
 class Invitation(db.Model):
     """
@@ -202,13 +208,18 @@ class Invitation(db.Model):
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     email = db.Column(db.String(120), nullable=False)
+    
+    club_id = db.Column(UUID(as_uuid=True), db.ForeignKey("clubs.id"), nullable=False)
+    
     invited_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     token = db.Column(db.String(200), unique=True, nullable=False)
     status = db.Column(db.String(50), nullable=False, default='pending')
+    
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     expirers_at = db.Column(db.DateTime, nullable=True)
     
     inviter = db.relationship("User", backref="sent_invitations")
+    club = db.relationship("Club", backref="invitations")
 
     def __repr__(self):
         return f'<Invitation {self.email} Status: {self.status}>'

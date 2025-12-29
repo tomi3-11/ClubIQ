@@ -1,0 +1,22 @@
+# Environmental variable
+.env 
+
+# Cache
+__pycache__/
+
+# Virtual Environments
+CTenv
+venv
+.venv
+
+# Database
+app.db 
+sqlite3.db
+.db
+migrations
+instance
+
+.pytest_cache
+node_modules/
+.next/
+club/
