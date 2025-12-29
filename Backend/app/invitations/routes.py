@@ -1,16 +1,18 @@
 from flask_restful import Api
-from .resources import CreateInvitationResource, GetInvitationsResource, AcceptInvitationResource
+from .resources import (
+    InvitationListResource,
+    InvitationDetailResource,
+    InvitationAcceptResource,
+)
 
 def register_routes(bp):
-    """
-    Function for registering routes
-    
-    :param bp: the blueprint instance of the flask Blueprint class
-    """
-    
     api = Api(bp)
-    
-    # Register endpoints 
-    api.add_resource(CreateInvitationResource, '/')
-    api.add_resource(GetInvitationsResource, '/<int:invite_id>/')
-    api.add_resource(AcceptInvitationResource, '/accept/<token>')
+
+    # Invitations collection (Create and list invitations)
+    api.add_resource(InvitationListResource, '/')
+
+    # Single invitation
+    api.add_resource(InvitationDetailResource, '/<int:invite_id>')
+
+    # Accept invitation (state change)
+    api.add_resource(InvitationAcceptResource, '/<string:token>/accept')

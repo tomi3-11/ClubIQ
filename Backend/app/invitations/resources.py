@@ -1,18 +1,21 @@
 from flask_restful import Resource
-from .service import InvitationService
 from flask import request
 from datetime import datetime
+from .service import InvitationService
 
 
 class InvitationListResource(Resource):
+
     def post(self):
         data = request.get_json() or {}
 
         email = data.get("email")
+        club_id = data.get("club_id")
         expires_at = data.get("expires_at")
+        invited_by = data.get("invited_by")  # TEMP → replace with auth
 
-        if not email:
-            return {"message": "Email is required"}, 400
+        if not all([email, club_id, invited_by]):
+            return {"message": "email, club_id and invited_by are required"}, 400
 
         if expires_at:
             try:
@@ -20,20 +23,10 @@ class InvitationListResource(Resource):
             except ValueError:
                 return {"message": "Invalid expires_at format"}, 400
 
-        # TEMP: replace with current_user.id when auth is ready
-        """
-        Recommended: use jwt_get_identity()
-        simple prototype: (only when using tokens)
-        user = User.query.get_or_404(get_jwt_identity()) -> simpley gets the currently logged in by checking the tokens
-        then implement like this: "user.id"
-        """
-        invited_by = data.get("invited_by")
-        if not invited_by:
-            return {"message": "invited_by is required"}, 400
-
         invitation = InvitationService.create_invitation(
             email=email,
             invited_by=invited_by,
+            club_id=club_id,
             expires_at=expires_at
         )
 
@@ -51,11 +44,20 @@ class InvitationDetailResource(Resource):
         return invitation.to_dict(), 200
 
 
-class AcceptInvitationResource(Resource):
+class InvitationAcceptResource(Resource):
     def post(self, token):
-        invitation = InvitationService.accept_invitation(token)
+        data = request.get_json() or {}
 
-        if not invitation:
-            return {"message": "Invalid or expired token"}, 404
+        user_id = data.get("user_id")  # TEMP → replace with current_user.id
+        if not user_id:
+            return {"message": "User ID required"}, 400
 
-        return invitation, 200
+        result, error = InvitationService.accept_and_join_club(token, user_id)
+
+        if error:
+            return {"message": error}, 400
+
+        return {
+            "message": "Successfully joined the club",
+            "membership": result
+        }, 200
