@@ -3,7 +3,7 @@ from flask_restful import Resource, Api
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from app import db
-from app.models import Club, Club_member, User
+from app.models import Club, ClubMember, User
 from app.clubs import clubs_bp
 
 api = Api(clubs_bp)
@@ -130,7 +130,7 @@ class ClubListResource(Resource):
         db.session.flush()  # Flush to get the club ID without committing
 
         # Automatically add creator as a club member with 'admin' role
-        club_member = Club_member(
+        club_member = ClubMember(
             club_id=new_club.id,
             user_id=user_id,
             role='admin'  # Creator becomes admin of the club

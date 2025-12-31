@@ -3,7 +3,7 @@ from flask.views import MethodView
 from functools import wraps
 from sqlalchemy import func, and_
 from app import db
-from app.models import Rating, Task, User
+from app.models import Rating, Task, User, TaskStatusEnum
 import uuid
 from datetime import datetime
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -50,27 +50,31 @@ class RatingAPI(MethodView):
         comments = data.get('comments')
         rated_user = data.get('rated_user')
 
-        if not all([score, rated_user]):
+        if score is None or rated_user is None:
             return jsonify({"success": False, "message": "Missing required fields"}), 400
+
+        rated_user_obj = User.query.get(rated_user)
+        if not rated_user_obj:
+            return jsonify({"success": False, "message": "Rated user not found"}), 404
 
         task = Task.query.get(id)
         if not task:
             return jsonify({"success": False, "message": "Task not found"}), 404
 
-        if task.status != 'completed':
+        if task.status != TaskStatusEnum.completed:
             return jsonify({"success": False, "message": "Cannot rate an incomplete task"}), 400
 
         current_user = User.query.get(get_jwt_identity())
 
         # Prevent duplicate rating
-        if Rating.query.filter_by(task_id=id, rated_by=current_user.id).first():
+        if Rating.query.filter_by(task_id=id, rated_by_id=current_user.id).first():
             return jsonify({"success": False, "message": "You have already rated this task"}), 400
 
         rating = Rating(
             id=uuid.uuid4(),
             task_id=id,
-            rated_user=rated_user,
-            rated_by=current_user.id,
+            rated_user_id=rated_user,
+            rated_by_id=current_user.id,
             score=score,
             comments=comments
         )
@@ -84,7 +88,7 @@ class RatingAPI(MethodView):
             "data": {
                 "rating_id": str(rating.id),
                 "task_id": str(rating.task_id),
-                "rated_user": rating.rated_user,
+                "rated_user": rating.rated_user_id,
                 "score": rating.score
             }
         }), 201
@@ -113,8 +117,8 @@ class RatingAPI(MethodView):
 
         data = [{
             "id": str(r.id),
-            "rated_user": r.rated_user,
-            "rated_by": r.rated_by,
+            "rated_user": r.rated_user_id,
+            "rated_by": r.rated_by_id,
             "score": r.score,
             "comments": r.comments,
             "created_at": r.created_at.isoformat()
@@ -145,7 +149,7 @@ class UserRatingAPI(MethodView):
         from_date = request.args.get('from')
         to_date = request.args.get('to')
 
-        filters = [Rating.rated_user == id]
+        filters = [Rating.rated_user_id == id]
         if from_date:
             filters.append(Rating.created_at >= datetime.fromisoformat(from_date))
         if to_date:
@@ -162,7 +166,7 @@ class UserRatingAPI(MethodView):
             "task_id": str(r.task_id),
             "score": r.score,
             "comments": r.comments,
-            "rated_by": r.rated_by,
+            "rated_by": r.rated_by_id,
             "created_at": r.created_at.isoformat()
         } for r in ratings]
 

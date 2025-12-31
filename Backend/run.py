@@ -1,13 +1,13 @@
 import os
 from app import create_app, db
-from app.models import User, Club, Club_member, Activity, Invitation, Task, Rating
+from app.models import User, Club, ClubMember, Activity, Invitation, Task, Rating
 from dotenv import load_dotenv
+
+# Load environmental variables from .env file before creating the app
+load_dotenv()
 
 # Create the application instance
 app = create_app()
-
-# Load environmental variables from .env file
-load_dotenv()
 
 # Set up a shell context for easy debugging with 'flask shell'
 @app.shell_context_processor
@@ -16,7 +16,7 @@ def make_shell_context():
         'db': db,
         'User': User,
         'Club': Club,
-        'Club_member': Club_member,
+        'ClubMember': ClubMember,
         'Activity': Activity,
         'Invitation': Invitation,
         'Task': Task,

@@ -2,17 +2,18 @@ from flask_restful import Resource
 from flask import request
 from datetime import datetime
 from .service import InvitationService
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
 class InvitationListResource(Resource):
-
+    @jwt_required()
     def post(self):
         data = request.get_json() or {}
 
         email = data.get("email")
         club_id = data.get("club_id")
         expires_at = data.get("expires_at")
-        invited_by = data.get("invited_by")  # TEMP → replace with auth
+        invited_by = get_jwt_identity()
 
         if not all([email, club_id, invited_by]):
             return {"message": "email, club_id and invited_by are required"}, 400
@@ -39,18 +40,16 @@ class InvitationListResource(Resource):
 
 
 class InvitationDetailResource(Resource):
+    @jwt_required()
     def get(self, invite_id):
         invitation = InvitationService.get_invitation_by_id(invite_id)
         return invitation.to_dict(), 200
 
 
 class InvitationAcceptResource(Resource):
+    @jwt_required()
     def post(self, token):
-        data = request.get_json() or {}
-
-        user_id = data.get("user_id")  # TEMP → replace with current_user.id
-        if not user_id:
-            return {"message": "User ID required"}, 400
+        user_id = get_jwt_identity()
 
         result, error = InvitationService.accept_and_join_club(token, user_id)
 

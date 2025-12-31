@@ -7,5 +7,5 @@ def register_routes(bp):
 
     # endpoints
     api.add_resource(CreateActivityResource, "/create/")
-    api.add_resource(ListActivityResource, "/<int:club_id>/")
+    api.add_resource(ListActivityResource, "/<string:club_id>/")
         

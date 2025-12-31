@@ -200,6 +200,7 @@ class InvitationStatusEnum(Enum):
     in_progress = "in_progress"
     accepted = "accepted"
 
+
 class Invitation(db.Model):
     """
     Invitation model to store invitation information.
@@ -208,20 +209,34 @@ class Invitation(db.Model):
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     email = db.Column(db.String(120), nullable=False)
-    
+
     club_id = db.Column(UUID(as_uuid=True), db.ForeignKey("clubs.id"), nullable=False)
-    
+
     invited_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     token = db.Column(db.String(200), unique=True, nullable=False)
-    status = db.Column(db.String(50), nullable=False, default='pending')
-    
+    status = db.Column(db.Enum(InvitationStatusEnum, name="invitation_status"), nullable=False, default=InvitationStatusEnum.pending)
+
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    expirers_at = db.Column(db.DateTime, nullable=True)
-    
+    expires_at = db.Column(db.DateTime, nullable=True)
+
     inviter = db.relationship("User", backref="sent_invitations")
     club = db.relationship("Club", backref="invitations")
 
+    def to_dict(self):
+        status_value = self.status.value if isinstance(self.status, InvitationStatusEnum) else self.status
+        return {
+            "id": str(self.id),
+            "email": self.email,
+            "club_id": str(self.club_id),
+            "invited_by": self.invited_by,
+            "token": self.token,
+            "status": status_value,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "expires_at": self.expires_at.isoformat() if self.expires_at else None,
+        }
+
     def __repr__(self):
-        return f'<Invitation {self.email} Status: {self.status}>'
+        status_value = self.status.value if isinstance(self.status, InvitationStatusEnum) else self.status
+        return f'<Invitation {self.email} Status: {status_value}>'
 
 

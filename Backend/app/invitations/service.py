@@ -51,6 +51,10 @@ class InvitationService:
         return query.order_by(Invitation.created_at.desc()).all()
 
     @staticmethod
+    def get_invitation_by_id(invite_id):
+        return Invitation.query.get_or_404(invite_id)
+
+    @staticmethod
     def accept_and_join_club(token, user_id):
         invitation = InvitationService.get_by_token(token)
 
