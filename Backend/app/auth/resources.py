@@ -80,15 +80,15 @@ class SyncUserResource(Resource):
                 "claims": claims,
             }
 
-            # Log inbound payload and derived fields for debugging mapping
-            current_app.logger.warning("Sync payload debug: %s", debug_info)
-            print(f"SYNC_DEBUG {debug_info}", flush=True)
+            # Debug logging commented out after troubleshooting
+            # current_app.logger.warning("Sync payload debug: %s", debug_info)
+            # print(f"SYNC_DEBUG {debug_info}", flush=True)
 
             # Validate required fields before calling service
             missing = [k for k in ("clerk_id", "name", "email", "username", "role") if not data.get(k)]
             if missing:
                 current_app.logger.warning("Sync missing fields: %s payload=%s", missing, data)
-                print(f"SYNC_MISSING {missing} payload={data}", flush=True)
+                # print(f"SYNC_MISSING {missing} payload={data}", flush=True)
                 return {
                     "message": f"Missing fields: {', '.join(missing)}",
                     "missing": missing,
