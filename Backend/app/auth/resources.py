@@ -41,9 +41,42 @@ class SyncUserResource(Resource):
             # Ensure the payload clerk_id matches the token; allow first sync without existing user
             data["clerk_id"] = g.clerk_id
 
-            # If we already have a synced user, enforce email consistency
+            claims = getattr(g, "clerk_claims", {}) or {}
+
+            # Derive email from claims, then enforce consistency if user already exists
+            email = data.get("email") or claims.get("email")
+            if not email:
+                email_addrs = claims.get("email_addresses") or []
+                primary_id = claims.get("primary_email_address_id")
+                primary = next((e for e in email_addrs if e.get("id") == primary_id), None)
+                email = (primary or email_addrs[0] if email_addrs else {}).get("email_address") if email_addrs else None
+
             if g.current_user:
-                data["email"] = g.current_user.email
+                email = g.current_user.email
+
+            data["email"] = email
+
+            # Derive display name and username if missing
+            first = claims.get("first_name")
+            last = claims.get("last_name")
+            name = data.get("name") or " ".join([part for part in [first, last] if part]).strip()
+            if not name:
+                name = claims.get("username") or (email.split("@", 1)[0] if email else None)
+
+            username = data.get("username") or claims.get("username") or (email.split("@", 1)[0] if email else None)
+
+            role = data.get("role") or "user"
+
+            data.update({
+                "name": name,
+                "username": username,
+                "role": role,
+            })
+
+            # Validate required fields before calling service
+            missing = [k for k in ("clerk_id", "name", "email", "username", "role") if not data.get(k)]
+            if missing:
+                return {"message": f"Missing fields: {', '.join(missing)}"}, 400
 
             response, status = AuthService.sync_user(data)
             return response, status
