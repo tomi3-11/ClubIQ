@@ -7,11 +7,11 @@ This module provides functions to:
 """
 
 import requests
-from jose from jwt 
+from jose import jwt
 from flask import current_app
 
 # Clerk JWK url (contains public keys to verify tokens)
-CLERK_JWKS_URL = "https://api/clerk.dev/v1/jwks"
+CLERK_JWKS_URL = "https://api.clerk.dev/v1/jwks"
 
 # Cache JWKS to avoid repeated requests 
 _cached_jwks = None
@@ -55,12 +55,12 @@ def verify_clerk_token(token: str) -> dict:
         raise Exception("Invalid token key")
     
     # Decode and verify token 
-    payload = jwks.decode(
+    payload = jwt.decode(
         token,
         rsa_key,
         algorithms=["RS256"],
         audience=current_app.config.get("CLERK_FRONTEND_API"),
-        issuer=current_app.config.get("CLERK_ISSUER")
+        issuer=current_app.config.get("CLERK_ISSUER"),
     )
     
     return payload

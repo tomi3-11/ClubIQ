@@ -1,9 +1,8 @@
 """
-Authorzation decorators for Flask Application
+Authorization decorators for the Flask application.
 
 Provides:
-- auth_required: verify JWT, mapp to DB user, enforce roles.
-
+- auth_required: verify JWT, map to DB user, enforce roles.
 """
 
 from functools import wraps
@@ -17,7 +16,7 @@ def auth_required(roles: list = None):
     Decorator to protect endpoints
     
     Args:
-        role (list, optional): List of roles allowed to access the endpoints.
+        roles (list, optional): List of roles allowed to access the endpoints.
                                 Example: ['admin', 'club_owner']
                                 
     Usage:
@@ -59,7 +58,7 @@ def auth_required(roles: list = None):
                 }, 403
                 
             # Check role if provided
-            if role and user.role not in roles:
+            if roles and user.role not in roles:
                 return {
                     "message": "Forbidden"
                 }, 403
@@ -68,4 +67,5 @@ def auth_required(roles: list = None):
             g.current_user = user
             
             return fn(*args, **kwargs)
-        return decorator
+        return wrapper
+    return decorator
