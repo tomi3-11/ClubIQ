@@ -7,7 +7,7 @@ Includes:
 - Test endpoint to verify JWT auth
 """
 
-from flask import request, g
+from flask import request, g, current_app
 from flask_restful import Resource
 from app.models import User
 from app.auth.service import AuthService
@@ -72,6 +72,17 @@ class SyncUserResource(Resource):
                 "username": username,
                 "role": role,
             })
+
+            # Log inbound payload and derived fields for debugging mapping
+            current_app.logger.info(
+                "Sync payload: input=%s derived_email=%s derived_name=%s derived_username=%s role=%s claims_keys=%s",
+                data,
+                email,
+                name,
+                username,
+                role,
+                list(claims.keys()),
+            )
 
             # Validate required fields before calling service
             missing = [k for k in ("clerk_id", "name", "email", "username", "role") if not data.get(k)]
