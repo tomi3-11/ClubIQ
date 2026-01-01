@@ -13,6 +13,11 @@ class Config:
     
     JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "my-secret-super_key-that-i-should-consider-changing-😁")
 
+    # Clerk configuration
+    CLERK_FRONTEND_API = os.environ.get("CLERK_FRONTEND_API")
+    CLERK_ISSUER = os.environ.get("CLERK_ISSUER")
+    CLERK_JWKS_URL = os.environ.get("CLERK_JWKS_URL", "https://api.clerk.dev/v1/jwks")
+
     
     # Secret key for sessions and CSRF protection
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'a-very-hard-to-guess-string'

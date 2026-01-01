@@ -18,11 +18,12 @@ _cached_jwks = None
 
 def get_jwks():
     """
-    Fetch the JWKS (JSON Web Key Set) from Clerk or return Cached keys
+    Fetch the JWKS (JSON Web Key Set) from Clerk or return cached keys.
     """
     global _cached_jwks
+    jwks_url = current_app.config.get("CLERK_JWKS_URL") or CLERK_JWKS_URL
     if _cached_jwks is None:
-        response = requests.get(CLERK_JWKS_URL)
+        response = requests.get(jwks_url)
         response.raise_for_status()
         _cached_jwks = response.json()
     return _cached_jwks
@@ -55,12 +56,17 @@ def verify_clerk_token(token: str) -> dict:
         raise Exception("Invalid token key")
     
     # Decode and verify token 
+    audience = current_app.config.get("CLERK_FRONTEND_API")
+    issuer = current_app.config.get("CLERK_ISSUER")
+    if not audience or not issuer:
+        raise Exception("Clerk configuration missing: set CLERK_FRONTEND_API and CLERK_ISSUER")
+
     payload = jwt.decode(
         token,
         rsa_key,
         algorithms=["RS256"],
-        audience=current_app.config.get("CLERK_FRONTEND_API"),
-        issuer=current_app.config.get("CLERK_ISSUER"),
+        audience=audience,
+        issuer=issuer,
     )
     
     return payload
