@@ -74,7 +74,7 @@ class SyncUserResource(Resource):
             })
 
             # Log inbound payload and derived fields for debugging mapping
-            current_app.logger.info(
+            current_app.logger.warning(
                 "Sync payload: input=%s derived_email=%s derived_name=%s derived_username=%s role=%s claims_keys=%s",
                 data,
                 email,
@@ -87,6 +87,7 @@ class SyncUserResource(Resource):
             # Validate required fields before calling service
             missing = [k for k in ("clerk_id", "name", "email", "username", "role") if not data.get(k)]
             if missing:
+                current_app.logger.warning("Sync missing fields: %s payload=%s", missing, data)
                 return {"message": f"Missing fields: {', '.join(missing)}"}, 400
 
             response, status = AuthService.sync_user(data)
