@@ -33,10 +33,7 @@ class SyncUserResource(Resource):
           to prevent a user from syncing someone else's account.
         """
         try:
-            data = request.get_json()
-
-            if not data:
-                return {"message": "No user data provided"}, 400
+            data = request.get_json() or {}
 
             # Ensure the payload clerk_id matches the token; allow first sync without existing user
             data["clerk_id"] = g.clerk_id
@@ -80,6 +77,7 @@ class SyncUserResource(Resource):
                 "derived_username": username,
                 "role": role,
                 "claims_keys": list(claims.keys()),
+                "claims": claims,
             }
 
             # Log inbound payload and derived fields for debugging mapping
