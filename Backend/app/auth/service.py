@@ -10,6 +10,7 @@ Responsibilities:
 from app import db
 from app.models import User
 from sqlalchemy import or_
+from sqlalchemy.exc import IntegrityError
 
 
 class AuthService:
@@ -71,7 +72,20 @@ class AuthService:
             message = "User created successfully"
 
         # Commit changes to database
-        db.session.commit()
+        try:
+            db.session.commit()
+        except IntegrityError as exc:
+            db.session.rollback()
+            return {
+                "message": "User sync failed due to duplicate email/username/clerk_id",
+                "error": str(exc.orig),
+            }, 409
+        except Exception as exc:
+            db.session.rollback()
+            return {
+                "message": "User sync failed",
+                "error": str(exc),
+            }, 500
 
         return {
             "message": message,

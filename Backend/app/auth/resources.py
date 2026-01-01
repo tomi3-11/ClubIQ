@@ -98,6 +98,7 @@ class SyncUserResource(Resource):
             response, status = AuthService.sync_user(data)
             return response, status
         except Exception as e:
+            current_app.logger.exception("SyncUserResource error")
             return {"message": "Error syncing user", "error": str(e)}, 500
 
 
