@@ -14,6 +14,7 @@ class Config:
     JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "my-secret-super_key-that-i-should-consider-changing-😁")
 
     # Clerk configuration
+    CLERK_SECRET_KEY = os.environ.get("CLERK_SECRET_KEY")
     CLERK_FRONTEND_API = os.environ.get("CLERK_FRONTEND_API")
     CLERK_AUDIENCE = os.environ.get("CLERK_AUDIENCE")  # fallback key some setups use
     CLERK_ISSUER = os.environ.get("CLERK_ISSUER")

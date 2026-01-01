@@ -1,73 +1,64 @@
 """
-Clerk JWT verification utility
+Clerk token verification via the Clerk Backend SDK.
 
-This module provides functions to:
-- Fetch Clerk JWKS (public keys)
-- verify JWTs issued by Clerk
+We verify session tokens by calling Clerk's `/sessions/{id}/verify` endpoint
+using the official backend SDK. This avoids managing JWKS locally and ensures
+the token is valid, not revoked, and issued for the current instance.
 """
 
-import requests
-from jose import jwt
+from jose import jwt  # used only to read unverified claims for session id
 from flask import current_app
+from clerk_backend_sdk import Configuration, ApiClient, SessionsApi
+from clerk_backend_sdk.models import VerifySessionRequest
+from clerk_backend_sdk.exceptions import ApiException
 
-# Clerk JWK url (contains public keys to verify tokens)
-CLERK_JWKS_URL = "https://api.clerk.dev/v1/jwks"
+_sessions_api = None
 
-# Cache JWKS to avoid repeated requests 
-_cached_jwks = None
 
-def get_jwks():
-    """
-    Fetch the JWKS (JSON Web Key Set) from Clerk or return cached keys.
-    """
-    global _cached_jwks
-    jwks_url = current_app.config.get("CLERK_JWKS_URL") or CLERK_JWKS_URL
-    if _cached_jwks is None:
-        response = requests.get(jwks_url)
-        response.raise_for_status()
-        _cached_jwks = response.json()
-    return _cached_jwks
+def _get_sessions_api() -> SessionsApi:
+    """Create (or reuse) a Clerk SessionsApi client with the secret key."""
+    global _sessions_api
+
+    if _sessions_api is not None:
+        return _sessions_api
+
+    secret = current_app.config.get("CLERK_SECRET_KEY")
+    if not secret:
+        raise Exception("Clerk configuration missing: set CLERK_SECRET_KEY")
+
+    configuration = Configuration()
+    configuration.access_token = secret  # bearerAuth
+
+    _sessions_api = SessionsApi(ApiClient(configuration))
+    return _sessions_api
 
 
 def verify_clerk_token(token: str) -> dict:
     """
-    Verify a Clerk JWK using RS256 and return the payload.
-    
-    Args:
-        token (str): JWT from Authorization header.
-        
-    Returns:
-        dict: Decoded payload containing at least 'sub' (clerk_id).
-        
-    Raises:
-        Exception: If token is invalid or verification fails.
-    """
-    jwks = get_jwks()
-    unverified_header = jwt.get_unverified_header(token)
-    
-    # Find the matching key by 'kid'
-    rsa_key = {}
-    for key in jwks["keys"]:
-        if key["kid"] == unverified_header["kid"]:
-            rsa_key = key
-            break
-        
-    if not rsa_key:
-        raise Exception("Invalid token key")
-    
-    # Decode and verify token 
-    # Support both CLERK_FRONTEND_API (preferred) and CLERK_AUDIENCE (fallback)
-    audience = current_app.config.get("CLERK_FRONTEND_API") or current_app.config.get("CLERK_AUDIENCE")
-    issuer = current_app.config.get("CLERK_ISSUER")
-    if not audience or not issuer:
-        raise Exception("Clerk configuration missing: set CLERK_FRONTEND_API and CLERK_ISSUER")
+    Verify a Clerk session token using Clerk's backend verification API.
 
-    payload = jwt.decode(
-        token,
-        rsa_key,
-        algorithms=["RS256"],
-        audience=audience,
-        issuer=issuer,
-    )
-    
-    return payload
+    Returns a minimal payload with the Clerk user id (sub) and session id.
+    Raises an Exception if verification fails.
+    """
+
+    # Read unverified claims only to get session id (sid)
+    unverified_claims = jwt.get_unverified_claims(token)
+    session_id = unverified_claims.get("sid")
+    if not session_id:
+        raise Exception("Invalid token payload: sid missing")
+
+    sessions_api = _get_sessions_api()
+
+    try:
+        session = sessions_api.verify_session(
+            session_id,
+            VerifySessionRequest(token=token),
+        )
+    except ApiException as exc:  # from Clerk SDK
+        raise Exception(f"Clerk verification failed: {exc}") from exc
+
+    # Map to the shape expected by downstream callers
+    return {
+        "sub": session.user_id,
+        "sid": session.id,
+    }
