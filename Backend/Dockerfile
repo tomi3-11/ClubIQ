@@ -9,7 +9,7 @@ WORKDIR /app
 
 # Install system dependencies for psycopg2 and others
 RUN apt-get update && apt-get install -y netcat-traditional \
-    build-essential \
+    build-essential postgresql-client curl \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 

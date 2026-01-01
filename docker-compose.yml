@@ -3,11 +3,13 @@ services:
   db:
     image: postgres:16
     container_name: clubiq_db
-    restart: always
+    restart: unless-stopped
+    env_file:
+      - Backend/.env
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: clubiq
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
     volumes:
