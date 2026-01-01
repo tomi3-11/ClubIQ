@@ -56,7 +56,8 @@ def verify_clerk_token(token: str) -> dict:
         raise Exception("Invalid token key")
     
     # Decode and verify token 
-    audience = current_app.config.get("CLERK_FRONTEND_API")
+    # Support both CLERK_FRONTEND_API (preferred) and CLERK_AUDIENCE (fallback)
+    audience = current_app.config.get("CLERK_FRONTEND_API") or current_app.config.get("CLERK_AUDIENCE")
     issuer = current_app.config.get("CLERK_ISSUER")
     if not audience or not issuer:
         raise Exception("Clerk configuration missing: set CLERK_FRONTEND_API and CLERK_ISSUER")

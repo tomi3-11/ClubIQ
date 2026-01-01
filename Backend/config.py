@@ -15,6 +15,7 @@ class Config:
 
     # Clerk configuration
     CLERK_FRONTEND_API = os.environ.get("CLERK_FRONTEND_API")
+    CLERK_AUDIENCE = os.environ.get("CLERK_AUDIENCE")  # fallback key some setups use
     CLERK_ISSUER = os.environ.get("CLERK_ISSUER")
     CLERK_JWKS_URL = os.environ.get("CLERK_JWKS_URL", "https://api.clerk.dev/v1/jwks")
 
