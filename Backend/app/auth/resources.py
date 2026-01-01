@@ -23,7 +23,7 @@ class SyncUserResource(Resource):
     - Optional: Restrict to specific roles (e.g., 'admin') if desired
     """
 
-    @auth_required()  # Any logged-in user can sync themselves
+    @auth_required(require_synced=False)  # Allow first-time sync before user exists locally
     def post(self):
         """
         Create or update a user in the database using AuthService.sync_user.
@@ -38,9 +38,12 @@ class SyncUserResource(Resource):
             if not data:
                 return {"message": "No user data provided"}, 400
 
-            # Optional: ensure user can only sync themselves
-            data["clerk_id"] = g.current_user.clerk_id
-            data["email"] = g.current_user.email
+            # Ensure the payload clerk_id matches the token; allow first sync without existing user
+            data["clerk_id"] = g.clerk_id
+
+            # If we already have a synced user, enforce email consistency
+            if g.current_user:
+                data["email"] = g.current_user.email
 
             response, status = AuthService.sync_user(data)
             return response, status

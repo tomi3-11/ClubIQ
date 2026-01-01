@@ -11,7 +11,7 @@ from app.models import User
 from app.auth.clerk_jwt import verify_clerk_token
 
 
-def auth_required(roles: list = None):
+def auth_required(roles: list = None, require_synced: bool = True):
     """
     Decorator to protect endpoints
     
@@ -51,22 +51,24 @@ def auth_required(roles: list = None):
                 return {
                     "message": "Invalid token payload"
                 }, 401
-                
-            # Map Clerk ID to internal User
+            
+            # Map Clerk ID to internal User (optional for initial sync)
             user = User.query.filter_by(clerk_id=clerk_id).first()
-            if not user:
+            if not user and require_synced:
                 return {
                     "message": "User not synced"
                 }, 403
-                
-            # Check role if provided
-            if roles and user.role not in roles:
+            
+            # Check role if provided (only when user is present)
+            if roles and user and user.role not in roles:
                 return {
                     "message": "Forbidden"
                 }, 403
             
-            # Attach current user to flask global content
-            g.current_user = user
+            # Attach to flask global context
+            g.current_user = user  # may be None when require_synced is False
+            g.clerk_id = clerk_id
+            g.clerk_claims = payload
             
             return fn(*args, **kwargs)
         return wrapper
