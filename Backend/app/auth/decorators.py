@@ -6,7 +6,7 @@ Provides:
 """
 
 from functools import wraps
-from flask import request, g
+from flask import request, g, current_app
 from app.models import User 
 from app.auth.clerk_jwt import verify_clerk_token
 
@@ -39,7 +39,9 @@ def auth_required(roles: list = None):
             
             try:
                 payload = verify_clerk_token(token)
-            except Exception:
+            except Exception as exc:
+                # Log for diagnostics; still return generic auth error to client
+                current_app.logger.exception("Clerk token verification failed: %s", exc)
                 return {
                     "message": "Invalid or expired token"
                 }, 401
