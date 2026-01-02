@@ -1,3 +1,4 @@
+from sqlalchemy import or_
 from sqlalchemy.exc import IntegrityError
 from app import db
 from app.models import Club, ClubMember, User
@@ -22,8 +23,17 @@ class ClubService:
         return ClubService._club_to_dict(club), 200
 
     @staticmethod
-    def list_clubs():
-        clubs = Club.query.all()
+    def list_clubs(user, mine: bool = False):
+        """List clubs. If mine=true and caller is not admin/super_user, limit to memberships/created."""
+        if mine and user.role not in ["admin", "super_user"]:
+            clubs = (
+                Club.query.join(ClubMember, ClubMember.club_id == Club.id, isouter=True)
+                .filter(or_(Club.created_by == user.id, ClubMember.user_id == user.id))
+                .distinct()
+                .all()
+            )
+        else:
+            clubs = Club.query.all()
         return [ClubService._club_to_dict(club) for club in clubs], 200
 
     @staticmethod

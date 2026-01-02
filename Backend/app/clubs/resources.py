@@ -28,7 +28,8 @@ class ClubResource(Resource):
 class ClubListResource(Resource):
     @auth_required()
     def get(self):
-        return ClubService.list_clubs()
+        mine = request.args.get("mine", "false").lower() in ["1", "true", "yes"]
+        return ClubService.list_clubs(g.current_user, mine)
 
     @auth_required()
     def post(self):
