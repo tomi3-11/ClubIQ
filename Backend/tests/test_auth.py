@@ -1,98 +1,101 @@
-import json
+from app import db
 from app.models import User
 
-def test_login_success(client):
-    """
-    GIVEN a running Flask application
-    WHEN the '/api/login' endpoint is posted to with valid credentials
-    THEN it should return a 200 OK status code and a JWT token.
-    """
-    
-    # The client fixture is automatically provided by pytest from conftest.py
-    response = client.post(
-        '/api/login',
-        data=json.dumps(dict(
-            email='test_admin@example.com',
-            password='test_password'
-        )),
-        content_type='application/json'
-    )
-    
-    data = json.loads(response.data)
+
+def auth_header(token: str = "test-token") -> dict:
+    return {"Authorization": f"Bearer {token}"}
+
+
+def test_sync_creates_user_first_time(monkeypatch, client, app):
+    payload = {
+        "sub": "clerk_sync_1",
+        "email": "sync_user@example.com",
+        "username": "syncuser",
+        "first_name": "Sync",
+        "last_name": "User",
+    }
+    monkeypatch.setattr("app.auth.decorators.verify_clerk_token", lambda token: payload)
+
+    response = client.post("/api/auth/sync/", json={}, headers=auth_header())
+
     assert response.status_code == 200
-    assert 'access_token' in data
-    assert isinstance(data['access_token'], str)
-    
-    
-def test_login_invalid_credentials(client):
-    """
-    GIVEN a running Flask application
-    WHEN the '/api/login' endpoint is posted to with invalid credentials
-    THEN it should return a 401 Unauthorized status code.
-    """
-    response = client.post(
-        '/api/login',
-        data=json.dumps(dict(
-            email='wrong@example.com',
-            password='wrong_password'
-        )),
-        content_type='application/json'
-    )
-    
-    data = json.loads(response.data)
-    assert response.status_code == 401
-    assert 'Invalid username or password' in data['message']
-    
-    
-def test_registration_success(client, app):
-    """
-    GIVEN a running Flask application
-    WHEN the '/api/register' endpoint is posted to with new user credentials
-    THEN it should return a 201 Created status code and a success message.
-    """
-    new_user_email = 'new_user@example.com'
-    response = client.post(
-        '/api/register',
-        data=json.dumps(dict(
-            username='New User',
-            email=new_user_email,
-            password='new_password',
-            confirm_password='new_password'
-        )),
-        content_type='application/json'
-    )
-    
-    data = json.loads(response.data)
-    assert response.status_code == 201
-    assert 'User registered successfully' in data['message']
-    
-    # Very the new user exists in the database
+    data = response.get_json()
+    assert data["user"]["clerk_id"] == payload["sub"]
+    assert data["user"]["email"] == payload["email"]
+
     with app.app_context():
-        user = User.query.filter_by(email=new_user_email).first()
-        assert user is not None
-        assert user.role == 'member' # Verifying that the default role is correct
-        
-        
-def test_registration_duplicate_email(client, app):
-    """
-    GIVEN a running Flask application with an existing user
-    WHEN the '/api/register' endpoint is posted to with a duplicate email
-    THEN it should return a 409 Conflict status code and an error message.
-    """
-    # Using the test user created in the context fixture
-    existing_user_email = 'test_admin@example.com'
+        synced = User.query.filter_by(clerk_id=payload["sub"]).one()
+        assert synced.username == "syncuser"
+
+
+def test_sync_missing_email_returns_400(monkeypatch, client, app):
+    monkeypatch.setattr("app.auth.decorators.verify_clerk_token", lambda token: {"sub": "clerk_missing_email"})
+
     response = client.post(
-        '/api/register',
-        data=json.dumps(dict(
-            username='Duplicate User',
-            email=existing_user_email,
-            password='some_password',
-            confirm_password='some_password'
-        )),
-        content_type='application/json'
+        "/api/auth/sync/",
+        json={"name": "No Email Provided", "username": "missingemail"},
+        headers=auth_header(),
     )
-    
-    data = json.loads(response.data)
-    assert response.status_code == 409
-    assert 'Email already exists' in data['message']
-    
+
+    assert response.status_code == 400
+    data = response.get_json()
+    assert "email" in data.get("missing", [])
+
+    with app.app_context():
+        assert User.query.filter_by(clerk_id="clerk_missing_email").first() is None
+
+
+def test_profile_requires_auth(client):
+    response = client.get("/api/auth/me/1/")
+
+    assert response.status_code == 401
+    data = response.get_json()
+    assert data["message"] == "Authorization token missing"
+
+
+def test_profile_returns_user_when_authed(monkeypatch, client, app):
+    with app.app_context():
+        user = User.query.filter_by(clerk_id="clerk_admin").one()
+
+    payload = {"sub": user.clerk_id}
+    monkeypatch.setattr("app.auth.decorators.verify_clerk_token", lambda token: payload)
+
+    response = client.get(f"/api/auth/me/{user.id}/", headers=auth_header())
+
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data["email"] == user.email
+    assert data["username"] == user.username
+
+
+def test_protected_endpoint_blocks_unsynced_user(monkeypatch, client):
+    monkeypatch.setattr("app.auth.decorators.verify_clerk_token", lambda token: {"sub": "clerk_unknown"})
+
+    response = client.get("/api/auth/test/", headers=auth_header())
+
+    assert response.status_code == 403
+    data = response.get_json()
+    assert data["message"] == "User not synced"
+
+
+def test_protected_endpoint_allows_synced_user(monkeypatch, client, app):
+    with app.app_context():
+        user = User(
+            clerk_id="clerk_synced",
+            name="Synced User",
+            email="synced@example.com",
+            username="synceduser",
+            role="user",
+        )
+        db.session.add(user)
+        db.session.commit()
+        username = user.username
+
+    payload = {"sub": "clerk_synced"}
+    monkeypatch.setattr("app.auth.decorators.verify_clerk_token", lambda token: payload)
+
+    response = client.get("/api/auth/test/", headers=auth_header())
+
+    assert response.status_code == 200
+    data = response.get_json()
+    assert username in data["message"]
