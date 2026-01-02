@@ -1,5 +1,5 @@
 from app.clubs.resources import ClubListResource, ClubResource
-from flask_restful import api
+from flask_restful import Api
 
 
 def register_blueprints(bp):
