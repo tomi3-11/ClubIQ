@@ -1,14 +1,8 @@
 import os
 
 class Config:
-    # Using SQLite for local development
-    if os.environ.get('DATABASE_URL'):
-        SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
-    else:
-        # For local develpement with SQLite
-        basedir = os.path.abspath(os.path.dirname(__file__))
-        SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')    
-    
+    # Using Postgres as the database
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')    
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", "my-secret-super_key-that-i-should-consider-changing-😁")

@@ -42,7 +42,7 @@ def create_app(config_class=Config):
     from app.members import members_bp
     from app.core.routes import core_bp
     from app.auth import auth_bp
-    from app.rating.routes import ratings_bp
+    from app.rating import ratings_bp
     from app.clubs import clubs_bp
     from app.activities import activities_bp
     from app.invitations import invitation_bp

@@ -48,6 +48,7 @@ def clean_members(app):
     with app.app_context():
         ClubMember.query.delete()
         Club.query.delete()
+        User.query.filter(User.clerk_id != "clerk_admin").delete()
         db.session.commit()
     yield
 
