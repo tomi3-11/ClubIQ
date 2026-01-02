@@ -1,6 +1,6 @@
 from uuid import UUID
 import secrets
-from datetime import datetime, UTC
+from datetime import datetime, timezone
 from sqlalchemy.exc import IntegrityError
 from app.models import Invitation, InvitationStatusEnum, User, ClubMember, Club
 from app import db, mail
@@ -87,7 +87,7 @@ class InvitationService:
         invitation = Invitation.query.filter_by(token=token).first()
         if not invitation:
             return None
-        if invitation.expires_at and invitation.expires_at < datetime.now(UTC):
+        if invitation.expires_at and invitation.expires_at < datetime.now(timezone.utc):
             return None
         return invitation
 
