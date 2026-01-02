@@ -7,8 +7,9 @@ Includes:
 - Test endpoint to verify JWT auth
 """
 
-from flask import request, g, current_app
+from flask import request, g, current_app, abort
 from flask_restful import Resource
+from app import db
 from app.models import User
 from app.auth.service import AuthService
 from .decorators import auth_required
@@ -111,7 +112,9 @@ class ProfileResource(Resource):
     """
     @auth_required()  # Verification for any logged-in user
     def get(self, user_id):
-        user = User.query.get_or_404(user_id)
+        user = db.session.get(User, user_id)
+        if not user:
+            abort(404)
         return {
             "id": user.id,
             "clerk_id": user.clerk_id,
