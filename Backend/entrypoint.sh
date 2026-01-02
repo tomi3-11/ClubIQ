@@ -15,4 +15,4 @@ flask db upgrade || true
 
 # Start the Flask development server
 echo "Starting Flask development server..."
-exec flask run --host=0.0.0.0 --port=5000
+exec gunicorn -c gunicorn_config.py wsgi:app
