@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from flask_restful import Resource, Api
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from app.auth.decorators import auth_required
 
 from app import db
 from app.models import Club, ClubMember, User
@@ -10,7 +10,7 @@ api = Api(clubs_bp)
 
 
 class ClubResource(Resource):
-    @jwt_required()
+    @auth_required()
     def get(self, club_id):
         club = Club.query.get_or_404(club_id)
         creator = User.query.get(club.created_by)
@@ -23,7 +23,7 @@ class ClubResource(Resource):
             "updated_at": club.updated_at.isoformat() if club.updated_at else None,
         }, 200
 
-    @jwt_required()
+    @auth_required()
     def put(self, club_id):
         club = Club.query.get_or_404(club_id)
         user_id = get_jwt_identity()
@@ -63,7 +63,7 @@ class ClubResource(Resource):
             "updated_at": club.updated_at.isoformat() if club.updated_at else None,
         }, 200
 
-    @jwt_required()
+    @auth_required()
     def delete(self, club_id):
         club = Club.query.get_or_404(club_id)
         user_id = get_jwt_identity()
@@ -84,7 +84,7 @@ class ClubResource(Resource):
 
 
 class ClubListResource(Resource):
-    @jwt_required()
+    @auth_required()
     def get(self):
         clubs = Club.query.all()
         clubs_data = []
@@ -100,7 +100,7 @@ class ClubListResource(Resource):
             })
         return clubs_data, 200
 
-    @jwt_required()
+    @auth_required()
     def post(self):
         data = request.get_json()
         if not data:
