@@ -14,19 +14,20 @@ def app():
     with app.app_context():
         # Create all database tables
         db.create_all()
-        
-        # Create a test user for authentication tests
+
+        # Create a baseline synced user
         admin_user = User(
-            username="Test Admin",
+            clerk_id="clerk_admin",
+            name="Test Admin",
             email="test_admin@example.com",
-            role="admin"
+            username="testadmin",
+            role="admin",
         )
-        admin_user.set_password('test_password')
         db.session.add(admin_user)
         db.session.commit()
-        
+
         yield app
-        
+
         # Clean up the database after tests
         db.session.remove()
         db.drop_all()
