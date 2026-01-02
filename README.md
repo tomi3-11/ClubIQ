@@ -8,7 +8,11 @@
 <img src="https://img.shields.io/badge/Docker-Containerized-blue?logo=docker">
 <img src="https://img.shields.io/badge/Clerk-Authentication-4F46E5?logo=clerk">
 <img src="https://img.shields.io/badge/License-MIT-green">
+<img src="https://img.shields.io/badge/Maintained-Yes-brightgreen.svg">
+<img src="https://img.shields.io/github/contributors/tomi3-11/ClubIQ">
 </p>
+
+
 
 ---
 
@@ -235,63 +239,16 @@ Frontend runs on:
 
 ---
 
-### Authentication Example
+### Endpoint Documentation. All blueprints for backend
 
-**POST** `/login`
+- [Authentication](./Backend/endpoint_documentation/authentication.md)
+- [Clubs](./Backend/endpoint_documentation/clubs.md)
+- [Members](./Backend/endpoint_documentation/members.md)
+- [Activities](./Backend/endpoint_documentation/activities.md)
+- [Rating](./Backend/endpoint_documentation/ratings.md)
+- [Invitation](./Backend/endpoint_documentation/invitations.md)
 
-Request:
 
-```json
-{
-  "email": "tom@example.com",
-  "password": "mysecretpassword"
-}
-```
-
-Response:
-
-```json
-{
-  "access_token": "jwt_token_string",
-  "token_type": "Bearer"
-}
-```
-
----
-
-### Members Example
-
-**GET** `/members`
-Headers:
-
-```
-Authorization: Bearer <token>
-```
-
-Response:
-
-```json
-[
-  { "id": 1, "name": "Tom", "email": "tom@example.com" }
-]
-```
-
----
-
-# **Testing**
-
-### Backend
-
-```bash
-cd Backend
-pytest
-```
-
-### Frontend
-
-Coming soon.
-
----
 
 # **Contribution Guide**
 
