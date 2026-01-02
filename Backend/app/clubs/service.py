@@ -1,3 +1,5 @@
+from uuid import UUID
+from flask import abort
 from sqlalchemy import or_
 from sqlalchemy.exc import IntegrityError
 from app import db
@@ -7,7 +9,7 @@ from app.models import Club, ClubMember, User
 class ClubService:
     @staticmethod
     def _club_to_dict(club):
-        creator = User.query.get(club.created_by)
+        creator = db.session.get(User, club.created_by)
         return {
             "id": str(club.id),
             "name": club.name,
@@ -18,8 +20,20 @@ class ClubService:
         }
 
     @staticmethod
+    def _get_club_or_404(club_id):
+        try:
+            club_uuid = UUID(str(club_id))
+        except ValueError:
+            abort(404)
+
+        club = db.session.get(Club, club_uuid)
+        if not club:
+            abort(404)
+        return club
+
+    @staticmethod
     def get_club(club_id):
-        club = Club.query.get_or_404(club_id)
+        club = ClubService._get_club_or_404(club_id)
         return ClubService._club_to_dict(club), 200
 
     @staticmethod
@@ -78,7 +92,7 @@ class ClubService:
 
     @staticmethod
     def update_club(club_id, data, user):
-        club = Club.query.get_or_404(club_id)
+        club = ClubService._get_club_or_404(club_id)
 
         if club.created_by != user.id and user.role not in ["admin", "super_user"]:
             return {"error": "Access forbidden: Insufficient permissions"}, 403
@@ -108,11 +122,13 @@ class ClubService:
 
     @staticmethod
     def delete_club(club_id, user):
-        club = Club.query.get_or_404(club_id)
+        club = ClubService._get_club_or_404(club_id)
 
         if club.created_by != user.id and user.role not in ["admin", "super_user"]:
             return {"error": "Access forbidden: Insufficient permissions"}, 403
 
+        # Remove memberships to avoid FK conflicts before deleting the club
+        ClubMember.query.filter_by(club_id=club.id).delete()
         db.session.delete(club)
 
         try:
