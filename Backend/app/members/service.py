@@ -24,8 +24,21 @@ class MemberService:
         }
 
     @staticmethod
-    def list_members():
-        members = ClubMember.query.all()
+    def list_members(current_user, mine: bool = False, club_id=None):
+        query = ClubMember.query
+
+        if club_id:
+            club_uuid = _parse_uuid(club_id)
+            if not club_uuid:
+                return {"error": "Invalid club_id"}, 400
+            query = query.filter(ClubMember.club_id == club_uuid)
+
+        if mine and current_user.role not in ["admin", "super_user"]:
+            query = query.join(Club, Club.id == ClubMember.club_id).filter(
+                (ClubMember.user_id == current_user.id) | (Club.created_by == current_user.id)
+            )
+
+        members = query.all()
         return [MemberService._member_to_dict(m) for m in members], 200
 
     @staticmethod

@@ -39,7 +39,7 @@ def create_app(config_class=Config):
     scheduler.init_app(app)
     
     # Register blueprints for modularity
-    from app.members.routes import members_bp
+    from app.members import members_bp
     from app.core.routes import core_bp
     from app.auth import auth_bp
     from app.rating.routes import ratings_bp
