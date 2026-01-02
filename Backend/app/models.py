@@ -1,4 +1,4 @@
-from datetime import datetime, UTC
+from datetime import datetime, timezone
 from app import db
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
@@ -17,8 +17,8 @@ class User(db.Model):
     username = db.Column(db.String(30), unique=True, nullable=False)
     # image_url = db.Column(db.String(200), nullable=True)
     role = db.Column(db.String(50), nullable=False, default='user')
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
-    updated_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC))
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
     
     def to_dict(self):
         return {
@@ -46,8 +46,8 @@ class Club(db.Model):
     name = db.Column(db.String(60), unique=True, nullable=False)
     description = db.Column(db.Text, nullable=True)
     created_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
-    updated_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC))
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
     members = db.relationship(
         "ClubMember", backref="club", lazy="dynamic"
@@ -70,7 +70,7 @@ class ClubMember(db.Model):
     club_id = db.Column(UUID(as_uuid=True), db.ForeignKey('clubs.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     role = db.Column(db.String(50), nullable=False, default='member')
-    joined_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
+    joined_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     
     user = db.relationship("User", backref="clubmembers")
     
@@ -97,9 +97,9 @@ class Activity(db.Model):
     club_id = db.Column(UUID(as_uuid=True), db.ForeignKey('clubs.id'), nullable=True) # Nullable False to be implemented some other time.
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text, nullable=True)
-    start_date = db.Column(db.DateTime, default=lambda: datetime.now(UTC), nullable=True)
+    start_date = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=True)
     end_date = db.Column(db.DateTime, nullable=True)
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     author_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True) # Nullable False to be implemented some other time.
 
     author = db.relationship("User", backref="activities")
@@ -143,7 +143,7 @@ class Task(db.Model):
         default=TaskStatusEnum.pending,
     )
     due_date = db.Column(db.DateTime, nullable=True)
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     
     assignee = db.relationship("User", backref="assigned_tasks", foreign_keys=[assigned_to])
     ratings = db.relationship("Rating", backref="task", lazy="dynamic")
@@ -175,7 +175,7 @@ class Rating(db.Model):
     rated_by_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     score = db.Column(db.Integer, nullable=False)
     comments = db.Column(db.Text, nullable=True)
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     rated_user = db.relationship("User", backref="received_ratings", foreign_keys=[rated_user_id])
     rated_by = db.relationship("User", backref="given_ratings", foreign_keys=[rated_by_id])
@@ -216,7 +216,7 @@ class Invitation(db.Model):
     token = db.Column(db.String(200), unique=True, nullable=False)
     status = db.Column(db.Enum(InvitationStatusEnum, name="invitation_status"), nullable=False, default=InvitationStatusEnum.pending)
 
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     expires_at = db.Column(db.DateTime, nullable=True)
 
     inviter = db.relationship("User", backref="sent_invitations")
