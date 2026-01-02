@@ -1,42 +1,63 @@
-from app.models import Activity, db, Club, User
+from uuid import UUID
+from sqlalchemy.exc import IntegrityError
+from app import db
+from app.models import Activity, Club, User
+
+
+def _parse_uuid(value):
+    try:
+        return UUID(str(value))
+    except (ValueError, TypeError):
+        return None
 
 class ActivityService:
     # Removes author, to be implemented Some other time
     
     @staticmethod
-    def create_activity(data):
+    def create_activity(data, current_user):
         title = data.get("title")
         description = data.get("description")
         club_id = data.get("club_id")
-        author_id = data.get("author_id")
 
         if not title:
             return {"message": "Title is required"}, 400
         if not club_id:
             return {"message": "club_id is required"}, 400
 
-        club = Club.query.get(club_id)
+        club_uuid = _parse_uuid(club_id)
+        if not club_uuid:
+            return {"message": "Invalid club_id"}, 400
+
+        club = db.session.get(Club, club_uuid)
         if not club:
             return {"message": "Club not found"}, 404
 
-        author = None
-        if author_id:
-            author = User.query.get(author_id)
-            if not author:
-                return {"message": "Author not found"}, 404
+        if not current_user:
+            return {"message": "User not synced"}, 403
 
-        if Activity.query.filter_by(title=title, club_id=club_id).first():
+        if current_user.role not in ["admin", "super_user"] and club.created_by != current_user.id:
+            return {"message": "Access forbidden: Insufficient permissions"}, 403
+
+        if Activity.query.filter_by(title=title, club_id=club.id).first():
             return {"message": "Activity already exists for this club"}, 400
 
         activity = Activity(
             title=title,
             description=description,
-            club_id=club_id,
-            author_id=author_id if author else None,
+            club_id=club.id,
+            author_id=current_user.id,
         )
 
         db.session.add(activity)
-        db.session.commit()
+
+        try:
+            db.session.commit()
+        except IntegrityError as exc:
+            db.session.rollback()
+            return {"message": "Activity creation failed", "error": str(exc.orig)}, 409
+        except Exception as exc:
+            db.session.rollback()
+            return {"message": "Activity creation failed", "error": str(exc)}, 500
 
         return {
             "message": "Activity created successfully",
@@ -45,15 +66,20 @@ class ActivityService:
         
         
     @staticmethod
-    def list_activities(club):
+    def list_activities(club_id):
+        club_uuid = _parse_uuid(club_id)
+        if not club_uuid:
+            return {"message": "Club not found"}, 404
+
+        club = db.session.get(Club, club_uuid)
         if not club:
             return {"message": "Club not found"}, 404
 
-        query = Activity.query.filter_by(club_id=club.id)
-
-        activities = query.order_by(
-            Activity.created_at.desc()
-        ).all()
+        activities = (
+            Activity.query.filter_by(club_id=club.id)
+            .order_by(Activity.created_at.desc())
+            .all()
+        )
 
         return [ActivityService._serialize(a) for a in activities], 200
         

@@ -14,7 +14,14 @@ def set_token(monkeypatch, clerk_id: str):
 
 def create_user(app, clerk_id: str, name: str, email: str, username: str, role: str = "user"):
     with app.app_context():
-        user = User(clerk_id=clerk_id, name=name, email=email, username=username, role=role)
+        unique_suffix = uuid.uuid4().hex[:6]
+        user = User(
+            clerk_id=clerk_id,
+            name=name,
+            email=f"{unique_suffix}-{email}",
+            username=f"{username}-{unique_suffix}",
+            role=role,
+        )
         db.session.add(user)
         db.session.commit()
         return {"id": user.id, "clerk_id": user.clerk_id, "username": user.username}
