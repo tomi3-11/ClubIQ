@@ -19,9 +19,11 @@ services:
     image: dpage/pgadmin4
     container_name: pgadmin
     restart: unless-stopped
+    env_file:
+      - Backend/.env
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@clubiq.com
-      PGADMIN_DEFAULT_PASSWORD: clubiq123
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     ports:
       - "5050:80"
     volumes:
