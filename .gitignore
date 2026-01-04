@@ -20,3 +20,6 @@ instance
 node_modules/
 .next/
 club/
+
+# SSL Keys
+pgadmin/pgadmin.key

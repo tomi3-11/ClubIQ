@@ -1,6 +1,6 @@
 services:
 
-  db:
+  postgres:
     image: postgres:16
     container_name: clubiq_db
     restart: unless-stopped
@@ -13,7 +13,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
 
   pgadmin:
     image: dpage/pgadmin4
@@ -24,19 +24,26 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      PGADMIN_CONFIG_SERVER_MODE: "True"
+      PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION: "True"
+      PGADMIN_CONFIG_LOGIN_BANNER: "'Authorized users only.'"
+      PGADMIN_CONFIG_CONSOLE_LOG_LEVEL: 30
     ports:
       - "5050:80"
     volumes:
       - pgadmin_data:/var/lib/pgadmin
+      - ./pgadmin/servers.json:/pgadmin4/servers.json:ro
+      - ./pgadmin/pgadmin.crt:/certs/server.cert:ro
+      - ./pgadmin/pgadmin.key:/certs/server.key:ro
     depends_on:
-      - db
+      - postgres
 
   backend:
     build:
       context: .
       dockerfile: Backend/Dockerfile
     container_name: clubiq_backend
-    restart: always
+    restart: unless-stopped
     env_file:
       - Backend/.env
     depends_on:
@@ -52,7 +59,7 @@ services:
       context: .
       dockerfile: Frontend/Dockerfile
     container_name: clubiq_frontend
-    restart: always
+    restart: unless-stopped
     env_file:
       - Frontend/.env
     ports:
@@ -64,5 +71,5 @@ services:
       - backend
 
 volumes:
-  pgdata:
+  postgres_data:
   pgadmin_data:

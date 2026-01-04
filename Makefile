@@ -3,7 +3,7 @@
 # Variables
 FRONTEND_ID = $(shell docker compose ps -q frontend)
 BACKEND_ID  = $(shell docker compose ps -q backend)
-POSTGRES_ID = $(shell docker compose ps -q db)
+POSTGRES_ID = $(shell docker compose ps -q postgres)
 PGADMIN_ID = $(shell docker compose ps -q pgadmin)
 
 ########## UTIL ##########
@@ -21,36 +21,36 @@ help:
 	@echo "ClubIQ Development Environment"
 	@echo "--------------------------------"
 	@echo "Usage:"
-	@echo "  make build              	  	  	  - Build and start all containers"
+	@echo "  make build              	  	  	  	- Build and start all containers"
 	@echo "  make build-detached              	  - Build and start all containers in detached mode"
-	@echo "  make up                 	  	  	  - Rebuilds containers from existing images"
+	@echo "  make up                 	  	  	  	- Rebuilds containers from existing images"
 	@echo "  make up-detached                 	  - Rebuilds containers from existing images in detached mode"
-	@echo "  make down               	  	  	  - Breaks down existing containers but retains images and volumes"
-	@echo "  make start-all              	  	  - Start all containers"
-	@echo "  make stop-all               	  	  - Stop all containers"
+	@echo "  make down               	  	  	  	- Breaks down existing containers but retains images and volumes"
+	@echo "  make start-all              	  	  	- Start all containers"
+	@echo "  make stop-all               	  	  	- Stop all containers"
 	@echo "  make start-frontend              	  - Start frontend container"
 	@echo "  make stop-frontend               	  - Stop frontend container"
-	@echo "  make start-backend              	  - Start backend container"
-	@echo "  make stop-backend               	  - Stop backend container"
-	@echo "  make start-db              	  	  - Start postgres container"
-	@echo "  make stop-db               	  	  - Stop postgres container"
+	@echo "  make start-backend              	  	- Start backend container"
+	@echo "  make stop-backend               	  	- Stop backend container"
+	@echo "  make start-db              	  	  	- Start postgres container"
+	@echo "  make stop-db               	  	  	- Stop postgres container"
 	@echo "  make recreate-all            	  	  - Force rebuild and recreate all containers"
 	@echo "  make recreate-frontend            	  - Force rebuild and recreate the frontend container"
 	@echo "  make recreate-backend            	  - Force rebuild and recreate the backend container"
-	@echo "  make recreate-db            	  	  - Force rebuild and recreate the postgres container"
+	@echo "  make recreate-db            	  	  	- Force rebuild and recreate the postgres container"
 	@echo "  make recreate-pgadmin            	  - Force rebuild and recreate the pgadmin container"
-	@echo "  make logs-all               	  	  - View live logs for all containers"
+	@echo "  make logs-all               	  	  	- View live logs for all containers"
 	@echo "  make logs-frontend               	  - View live logs for frontend container"
-	@echo "  make logs-backend               	  - View live logs for backend container"
-	@echo "  make logs-db               	  	  - View live logs for postgres container"
-	@echo "  make logs-pgadmin               	  - View live logs for pgadmin container"
-	@echo "  make sh-frontend     	  	  	  	  - Open a shell inside the frontend container"
-	@echo "  make sh-backend      	  		  	  - Open a shell inside the backend container"
-	@echo "  make sh-db      	  		  		  - Open a shell inside the postgres container"
-	@echo "  make sh-pgadmin      	  		  	  - Open a shell inside the pgadmin container"
+	@echo "  make logs-backend               	  	- View live logs for backend container"
+	@echo "  make logs-db               	  	  	- View live logs for postgres container"
+	@echo "  make logs-pgadmin               	  	- View live logs for pgadmin container"
+	@echo "  make shell-frontend     	  	  	  	- Open a shell inside the frontend container"
+	@echo "  make shell-backend      	  		  	  - Open a shell inside the backend container"
+	@echo "  make shell-db      	  		  		  	- Open a shell inside the postgres container"
+	@echo "  make shell-pgadmin      	  		  	  - Open a shell inside the pgadmin container"
 	@echo "  make start-pgadmin               	  - Start pgadmin container"
-	@echo "  make stop-pgadmin               	  - Stop pgadmin container"
-	@echo "  make migrate            	  	  	  - Run Flask migrations inside the backend container"
+	@echo "  make stop-pgadmin               	  	- Stop pgadmin container"
+	@echo "  make migrate            	  	  	  	- Run Flask migrations inside the backend container"
 	@echo ""
 
 
@@ -155,7 +155,7 @@ stop-pgadmin:
 
 
 ############################################################
-# REBUILD CONTAINERS
+# RECREATE CONTAINERS
 ############################################################
 
 ########## I. RECREATES ALL ##########
@@ -246,32 +246,32 @@ logs-pgadmin:
 
 
 ############################################################
-# ENTER CONTAINER SHELLS (sh)
+# ENTER CONTAINER SHELLS
 ############################################################
 
 ########## I. ENTER FRONTEND CONTAINER ##########
-sh-frontend:
+shell-frontend:
 	$(call ensure_exists,$(FRONTEND_ID),frontend)
 	@echo "Entering frontend shell..."
 	docker exec -it $(FRONTEND_ID) sh
 
 
 ########## II. ENTER BACKEND CONTAINER ##########
-sh-backend:
+shell-backend:
 	$(call ensure_exists,$(BACKEND_ID),backend)
 	@echo "Entering backend shell..."
 	docker exec -it $(BACKEND_ID) sh
 
 
 ########## III. ENTER POSTGRES CONTAINER ##########
-sh-db:
+shell-db:
 	$(call ensure_exists,$(POSTGRES_ID),db)
 	@echo "Entering postgres shell..."
 	docker exec -it $(POSTGRES_ID) sh
 
 
 ########## IV. ENTER PGADMIN CONTAINER ##########
-sh-pgadmin:
+shell-pgadmin:
 	$(call ensure_exists,$(PGADMIN_ID),pgadmin)
 	@echo "Entering pgadmin shell..."
 	docker exec -it $(PGADMIN_ID) sh
