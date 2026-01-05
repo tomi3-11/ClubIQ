@@ -7,7 +7,7 @@
       "Host": "postgres",
       "Port": 5432,
       "MaintenanceDB": "clubiq",
-      "Username": "postgres",
+      "Username": "${POSTGRES_USER}",
       "SSLMode": "prefer"
     }
   }
