@@ -122,7 +122,14 @@ Example bash script to check expiration (add to your monitoring tools):
 #!/bin/bash
 CERT_FILE="pgadmin/pgadmin.crt"
 EXPIRY_DATE=$(openssl x509 -in "$CERT_FILE" -noout -enddate | cut -d= -f2)
-EXPIRY_EPOCH=$(date -d "$EXPIRY_DATE" +%s)
+# Convert expiry date to epoch seconds in a way that works on both GNU (Linux) and BSD/macOS date
+if date -d "$EXPIRY_DATE" +%s >/dev/null 2>&1; then
+    # GNU date
+    EXPIRY_EPOCH=$(date -d "$EXPIRY_DATE" +%s)
+else
+    # BSD/macOS date (OpenSSL outputs dates like "Jan  3 12:34:56 2027 GMT")
+    EXPIRY_EPOCH=$(date -j -f "%b %e %T %Y %Z" "$EXPIRY_DATE" +%s)
+fi
 CURRENT_EPOCH=$(date +%s)
 DAYS_UNTIL_EXPIRY=$(( ($EXPIRY_EPOCH - $CURRENT_EPOCH) / 86400 ))
 
