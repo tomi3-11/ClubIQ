@@ -51,8 +51,8 @@ help:
 	@echo "  make start-pgadmin               	  - Start pgadmin container"
 	@echo "  make stop-pgadmin               	  	- Stop pgadmin container"
 	@echo "  make migrate            	  	  	  	- Run Flask migrations inside the backend container"
-	@echo "  make check-ssl-cert               	  - Check pgAdmin SSL certificate expiration"
-	@echo "  make generate-ssl-cert               	- Generate new SSL certificate for pgAdmin"
+	@echo "  make check-ssl-cert            	  	  	- Check pgAdmin SSL certificate expiration"
+	@echo "  make generate-ssl-cert         	  	  	- Generate new SSL certificate for pgAdmin"
 	@echo ""
 
 
