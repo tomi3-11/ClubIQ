@@ -33,11 +33,11 @@ services:
       PGADMIN_CONFIG_LOGIN_BANNER: "'Authorized users only.'"
       PGADMIN_CONFIG_CONSOLE_LOG_LEVEL: 30
 
-    # For security, port exposure is turned off.
-    # If you need to use pgadmin via browser. stop the container first then:
+    # For security, port exposure is turned off by default.
+    # To use pgAdmin via browser, stop the container first and then uncomment the ports section below.
 
-    ports: # Uncomment this
-      - "5050:80" # Uncomment this
+    # ports:
+    #   - "5050:80"
 
     volumes:
       - pgadmin_data:/var/lib/pgadmin
