@@ -141,7 +141,17 @@ docker compose exec backend flask db upgrade
 
 ---
 
-## 7. Possible Issues
+## 7. SSL Certificate Management
+
+pgAdmin is configured with SSL certificates for secure connections. For details on certificate renewal and rotation:
+
+📄 See **[pgadmin/SSL_CERTIFICATE_MANAGEMENT.md](./pgadmin/SSL_CERTIFICATE_MANAGEMENT.md)**
+
+**Important**: The current SSL certificate expires on **January 3, 2027**. Plan to renew it before this date.
+
+---
+
+## 8. Possible Issues
 
 | Problem                                         | Fix                                                              |
 | ----------------------------------------------- | ---------------------------------------------------------------- |

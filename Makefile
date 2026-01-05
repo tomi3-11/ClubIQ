@@ -51,6 +51,8 @@ help:
 	@echo "  make start-pgadmin               	  - Start pgadmin container"
 	@echo "  make stop-pgadmin               	  	- Stop pgadmin container"
 	@echo "  make migrate            	  	  	  	- Run Flask migrations inside the backend container"
+	@echo "  make check-ssl-cert            	  	  	- Check pgAdmin SSL certificate expiration"
+	@echo "  make generate-ssl-cert         	  	  	- Generate new SSL certificate for pgAdmin"
 	@echo ""
 
 
@@ -288,6 +290,49 @@ migrate:
 
 
 ############################################################
+# SSL CERTIFICATE MANAGEMENT
+############################################################
+check-ssl-cert:
+	@echo "Checking pgAdmin SSL certificate..."
+	@if [ ! -f pgadmin/pgadmin.crt ]; then \
+		echo "ERROR: Certificate file not found at pgadmin/pgadmin.crt"; \
+		exit 1; \
+	fi
+	@echo ""
+	@echo "Certificate expiration date:"
+	@openssl x509 -in pgadmin/pgadmin.crt -noout -enddate
+	@echo ""
+	@echo "Full certificate details:"
+	@openssl x509 -in pgadmin/pgadmin.crt -noout -subject -issuer -dates
+	@echo ""
+	@echo "For more information, see: pgadmin/SSL_CERTIFICATE_MANAGEMENT.md"
+
+generate-ssl-cert:
+	@echo "Generating new SSL certificate for pgAdmin..."
+	@if [ -f pgadmin/pgadmin.crt ] || [ -f pgadmin/pgadmin.key ]; then \
+		echo "WARNING: Certificate or key file already exists."; \
+		read -p "This will overwrite existing files. Press Enter to continue or Ctrl+C to cancel..."; \
+	fi
+	# NOTE: The -nodes flag creates an UNENCRYPTED private key to avoid interactive passphrase prompts,
+	# which is convenient for local development and automation. For production or sensitive environments,
+	# consider generating an ENCRYPTED key instead (omit -nodes and use a passphrase) and follow the
+	# guidance in pgadmin/SSL_CERTIFICATE_MANAGEMENT.md.
+	openssl req -x509 -newkey rsa:2048 -nodes \
+		-keyout pgadmin/pgadmin.key \
+		-out pgadmin/pgadmin.crt \
+		-days 365 \
+		-subj "/C=KE/ST=Nairobi/L=Nairobi/O=AppFactory" && \
+		chmod 600 pgadmin/pgadmin.key && \
+		chmod 644 pgadmin/pgadmin.crt
+	@echo ""
+	@echo "Certificate generated successfully!"
+	@echo "Remember to recreate pgAdmin to apply changes: make recreate-pgadmin"
+	@echo "Certificate details:"
+	@openssl x509 -in pgadmin/pgadmin.crt -noout -dates
+
+
+
+############################################################
 # PHONY DIRECTIVES
 ############################################################
 
@@ -300,4 +345,5 @@ migrate:
 	sh-frontend sh-backend sh-db \
 	start-pgadmin stop-pgadmin \
 	recreate-pgadmin \
-	logs-pgadmin
+	logs-pgadmin \
+	check-ssl-cert generate-ssl-cert
