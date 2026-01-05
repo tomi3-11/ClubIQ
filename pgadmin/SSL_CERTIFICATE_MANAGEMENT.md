@@ -128,8 +128,11 @@ DAYS_UNTIL_EXPIRY=$(( ($EXPIRY_EPOCH - $CURRENT_EPOCH) / 86400 ))
 
 if [ $DAYS_UNTIL_EXPIRY -lt 30 ]; then
     echo "WARNING: Certificate expires in $DAYS_UNTIL_EXPIRY days!"
-    exit 1
+    exit 2
 fi
+
+echo "Certificate is valid for $DAYS_UNTIL_EXPIRY more days."
+exit 0
 ```
 
 ## Production Considerations

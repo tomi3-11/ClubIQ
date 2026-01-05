@@ -311,8 +311,7 @@ generate-ssl-cert:
 	@echo "Generating new SSL certificate for pgAdmin..."
 	@if [ -f pgadmin/pgadmin.crt ] || [ -f pgadmin/pgadmin.key ]; then \
 		echo "WARNING: Certificate or key file already exists."; \
-		echo "This will overwrite existing files. Press Ctrl+C to cancel or Enter to continue..."; \
-		read; \
+		read -p "This will overwrite existing files. Press Enter to continue or Ctrl+C to cancel..." dummy; \
 	fi
 	openssl req -x509 -newkey rsa:2048 -nodes \
 		-keyout pgadmin/pgadmin.key \
