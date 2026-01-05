@@ -313,6 +313,10 @@ generate-ssl-cert:
 		echo "WARNING: Certificate or key file already exists."; \
 		read -p "This will overwrite existing files. Press Enter to continue or Ctrl+C to cancel..."; \
 	fi
+	# NOTE: The -nodes flag creates an UNENCRYPTED private key to avoid interactive passphrase prompts,
+	# which is convenient for local development and automation. For production or sensitive environments,
+	# consider generating an ENCRYPTED key instead (omit -nodes and use a passphrase) and follow the
+	# guidance in pgadmin/SSL_CERTIFICATE_MANAGEMENT.md.
 	openssl req -x509 -newkey rsa:2048 -nodes \
 		-keyout pgadmin/pgadmin.key \
 		-out pgadmin/pgadmin.crt \
