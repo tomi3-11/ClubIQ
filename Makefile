@@ -326,7 +326,7 @@ generate-ssl-cert:
 		chmod 644 pgadmin/pgadmin.crt
 	@echo ""
 	@echo "Certificate generated successfully!"
-	@echo "Remember to restart pgAdmin: make recreate-pgadmin"
+	@echo "Remember to recreate pgAdmin to apply changes: make recreate-pgadmin"
 	@echo "Certificate details:"
 	@openssl x509 -in pgadmin/pgadmin.crt -noout -dates
 
