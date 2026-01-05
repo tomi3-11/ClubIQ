@@ -179,9 +179,10 @@ If pgAdmin reports certificate verification issues:
 If you're setting up the project for the first time and the `pgadmin.key` file is missing:
 
 ```bash
-# Generate the private key to match the existing certificate
-# Note: This will create a NEW key, which won't match the existing certificate
-# You'll need to generate BOTH a new certificate and key together
+# Generate a NEW certificate and private key pair for pgAdmin
+# Note: This will generate BOTH a new certificate and key pair,
+#       overwriting the existing pgadmin.crt file if it already exists.
+#       Do NOT use this if you need to preserve the current certificate.
 
 cd pgadmin
 openssl req -x509 -newkey rsa:2048 -nodes \
