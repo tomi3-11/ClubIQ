@@ -54,12 +54,13 @@ openssl req -x509 -newkey rsa:2048 -nodes \
 **Options explained:**
 - `-x509`: Generate a self-signed certificate
 - `-newkey rsa:2048`: Create a new RSA key with 2048-bit encryption
-- `-nodes`: Don't encrypt the private key (no password required)
+- `-nodes`: Don't encrypt the private key (no password required) — this is convenient for automation but results in an unencrypted key on disk
 - `-keyout`: Output file for the private key
 - `-out`: Output file for the certificate
 - `-days 365`: Certificate valid for 1 year (adjust as needed)
 - `-subj`: Certificate subject information (update as needed)
 
+⚠️ **Security note**: The `-nodes` flag creates an unencrypted private key. For production environments or when the key is stored outside a secure key management system, consider omitting `-nodes` and using an encrypted key with a strong passphrase instead. If you do so, be aware that automated processes will need a secure way to supply the passphrase.
 ### Step 2: Set Proper Permissions
 
 Ensure the private key has restricted permissions:
