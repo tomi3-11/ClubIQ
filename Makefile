@@ -321,9 +321,9 @@ generate-ssl-cert:
 		-keyout pgadmin/pgadmin.key \
 		-out pgadmin/pgadmin.crt \
 		-days 365 \
-		-subj "/C=KE/ST=Nairobi/L=Nairobi/O=AppFactory"
-	chmod 600 pgadmin/pgadmin.key
-	chmod 644 pgadmin/pgadmin.crt
+		-subj "/C=KE/ST=Nairobi/L=Nairobi/O=AppFactory" && \
+		chmod 600 pgadmin/pgadmin.key && \
+		chmod 644 pgadmin/pgadmin.crt
 	@echo ""
 	@echo "Certificate generated successfully!"
 	@echo "Remember to restart pgAdmin: make recreate-pgadmin"
