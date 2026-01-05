@@ -1,5 +1,6 @@
 services:
 
+  # DataBase
   postgres:
     image: postgres:16
     container_name: clubiq_db
@@ -14,7 +15,10 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend
 
+  # DataBase GUI
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin
@@ -28,8 +32,13 @@ services:
       PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION: "True"
       PGADMIN_CONFIG_LOGIN_BANNER: "'Authorized users only.'"
       PGADMIN_CONFIG_CONSOLE_LOG_LEVEL: 30
-    ports:
-      - "5050:80"
+
+    # For security, port exposure is turned off.
+    # If you need to use pgadmin via browser. stop the container first then:
+
+    ports: # Uncomment this
+      - "5050:80" # Uncomment this
+
     volumes:
       - pgadmin_data:/var/lib/pgadmin
       - ./pgadmin/servers.json:/pgadmin4/servers.json:ro
@@ -37,7 +46,10 @@ services:
       - ./pgadmin/pgadmin.key:/certs/server.key:ro
     depends_on:
       - postgres
+    networks:
+      - backend
 
+  # Backend service
   backend:
     build:
       context: .
@@ -54,6 +66,7 @@ services:
       - ./Backend:/app
     command: flask run --host=0.0.0.0 --port=5000
 
+  # Frontend service
   frontend:
     build:
       context: .
@@ -70,6 +83,12 @@ services:
     depends_on:
       - backend
 
+# Persistent Storage
 volumes:
   postgres_data:
   pgadmin_data:
+
+# Internal Networking for security
+networks:
+  backend:
+    internal: true
