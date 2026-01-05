@@ -89,7 +89,8 @@ After replacing the certificate files, restart the pgAdmin container to load the
 
 ```bash
 # Using make (recommended)
-make restart-pgadmin
+make stop-pgadmin
+make start-pgadmin
 
 # Or using docker compose directly
 docker compose restart pgadmin
