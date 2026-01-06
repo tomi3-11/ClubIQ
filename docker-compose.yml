@@ -57,6 +57,8 @@ services:
       dockerfile: Frontend/Dockerfile
     container_name: clubiq_frontend
     restart: unless-stopped
+    depends_on:
+      - backend
     env_file:
       - Frontend/.env
     ports:
