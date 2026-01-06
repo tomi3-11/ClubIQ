@@ -5,8 +5,6 @@ services:
     image: postgres:16
     container_name: clubiq_db
     restart: unless-stopped
-    env_file:
-      - Backend/.env
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -21,8 +19,6 @@ services:
     image: dpage/pgadmin4
     container_name: pgadmin
     restart: unless-stopped
-    env_file:
-      - Backend/.env
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}

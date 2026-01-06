@@ -51,7 +51,8 @@ ClubIQ/
 │   ├── package.json
 │   ├── src/
 │   └── .env.example
-│
+│ 
+├── .env.example 
 ├── docker-compose.dev.yml
 ├── Makefile
 ├── .dockerignore
@@ -65,37 +66,41 @@ ClubIQ/
 Copy and configure the example environment files:
 
 ```bash
+cp .env.example .env
 cp Backend/.env.example Backend/.env
 cp Frontend/.env.example Frontend/.env
 ```
 
-Then open both `.env` files and replace values as needed:
+Then open the three `.env` files and replace values as needed:
+
+**ClubIQ/.env**
+
+```bash
+# Postgres Credentials
+POSTGRES_USER=your-postgres-username
+POSTGRES_PASSWORD=your-postgres-password
+POSTGRES_DB=your-postgres-database
+
+# PgAdmin Credentials
+PGADMIN_DEFAULT_EMAIL=your-pgadmin-email
+PGADMIN_DEFAULT_PASSWORD=your-pgadmin-password
+```
 
 **Backend/.env**
 
 ```bash
-# Flask settings
-FLASK_APP=run.py
-FLASK_ENV=development
+# Postgres Credentials
+POSTGRES_USER=your-postgres-username
+POSTGRES_PASSWORD=your-postgres-password
 
-# Database settings
-DATABASE_URL=postgresql://postgres:postgres@db:5432/clubiq
-
-# Clerk settings
+# Clerk Settings
 CLERK_SECRET_KEY=your-clerk-secret-key
-
-# Optional debug settings
-DEBUG=True
 ```
 
 **Frontend/.env**
 
 ```bash
-# API and app URLs
-NEXT_PUBLIC_API_URL=http://localhost:5000
-NEXT_PUBLIC_APP_URL=http://localhost:3000
-
-# Clerk authentication
+# Clerk Settings
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your-clerk-publishable-key
 CLERK_SECRET_KEY=your-clerk-secret-key
 ```
