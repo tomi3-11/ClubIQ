@@ -74,6 +74,8 @@ services:
       - /app/node_modules
     depends_on:
       - backend
+    network:
+      - backend
 
 # Persistent Storage
 volumes:
