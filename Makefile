@@ -36,7 +36,7 @@ help:
 	@echo "|  make recreate-all       - Force rebuild and recreate all containers                       |"
 	@echo "|  make recreate-frontend  - Force rebuild and recreate the frontend container               |"
 	@echo "|  make recreate-backend   - Force rebuild and recreate the backend container                |"
-	@echo "|  make recreate-db        - Force rebuild and recreate the postgres container               |"
+	@echo "|  make recreate-postgres  - Force rebuild and recreate the postgres container               |"
 	@echo "|  make recreate-pgadmin   - Force rebuild and recreate the pgadmin container                |"
 	@echo "|  make logs-all           - View live logs for all containers                               |"
 	@echo "|  make logs-frontend      - View live logs for frontend container                           |"
