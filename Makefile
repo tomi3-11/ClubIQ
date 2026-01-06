@@ -231,7 +231,7 @@ logs-backend:
 
 ########## IV. VIEW LOGS (POSTGRES) ##########
 logs-db:
-	$(call ensure_exists,$(POSTGRES_ID),db)
+	$(call ensure_exists,$(POSTGRES_ID),postgres)
 	@echo "Logs for postgres:"
 	docker logs -f $(POSTGRES_ID)
 
@@ -264,7 +264,7 @@ shell-backend:
 
 ########## III. ENTER POSTGRES CONTAINER ##########
 shell-db:
-	$(call ensure_exists,$(POSTGRES_ID),db)
+	$(call ensure_exists,$(POSTGRES_ID),postgres)
 	@echo "Entering postgres shell..."
 	docker exec -it $(POSTGRES_ID) sh
 
@@ -280,7 +280,7 @@ shell-pgadmin:
 # MANUAL MIGRATIONS FOR THE BACKEND
 ############################################################
 migrate:
-	@echo "$(GREEN)Running database migrations...$(NC)"
+	@echo "Running database migrations..."
 	docker compose exec backend flask db migrate -m "auto migration"
 	docker compose exec backend flask db upgrade
 

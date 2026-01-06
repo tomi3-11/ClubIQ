@@ -15,29 +15,23 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    network:
-      - backend
 
   # Database Web GUI
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin
     restart: unless-stopped
+    env_file:
+      - Backend/.env
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-      PGADMIN_CONFIG_SERVER_MODE: "True"
-      PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION: "True"
-      PGADMIN_CONFIG_LOGIN_BANNER: "'Authorized users only.'"
-      PGADMIN_CONFIG_CONSOLE_LOG_LEVEL: 30
-    ports: # Comment out both port lines when not in use
+    ports:
       - "5050:80"
     volumes:
       - pgadmin_data:/var/lib/pgadmin
     depends_on:
       - postgres
-    network:
-      - backend
 
   # Backend Service
   backend:
@@ -45,7 +39,7 @@ services:
       context: .
       dockerfile: Backend/Dockerfile
     container_name: clubiq_backend
-    restart: always
+    restart: unless-stopped
     env_file:
       - Backend/.env
     depends_on:
@@ -55,8 +49,6 @@ services:
     volumes:
       - ./Backend:/app
     command: flask run --host=0.0.0.0 --port=5000
-    network:
-      - backend
 
   # Frontend Service
   frontend:
@@ -64,7 +56,7 @@ services:
       context: .
       dockerfile: Frontend/Dockerfile
     container_name: clubiq_frontend
-    restart: always
+    restart: unless-stopped
     env_file:
       - Frontend/.env
     ports:
@@ -72,15 +64,8 @@ services:
     volumes:
       - ./Frontend:/app
       - /app/node_modules
-    depends_on:
-      - backend
 
 # Persistent Storage
 volumes:
   postgres_data:
   pgadmin_data:
-
-# Internal network
-networks:
-  backend:
-    internal: true
