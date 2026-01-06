@@ -1,6 +1,7 @@
 services:
 
-  db:
+  # Database Service
+  postgres:
     image: postgres:16
     container_name: clubiq_db
     restart: unless-stopped
@@ -13,44 +14,51 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
 
+  # Database Web GUI
   pgadmin:
     image: dpage/pgadmin4
     container_name: pgadmin
     restart: unless-stopped
+    env_file:
+      - Backend/.env
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@clubiq.com
-      PGADMIN_DEFAULT_PASSWORD: clubiq123
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     ports:
       - "5050:80"
     volumes:
       - pgadmin_data:/var/lib/pgadmin
     depends_on:
-      - db
+      - postgres
 
+  # Backend Service
   backend:
     build:
       context: .
       dockerfile: Backend/Dockerfile
     container_name: clubiq_backend
-    restart: always
+    restart: unless-stopped
     env_file:
       - Backend/.env
     depends_on:
-      - db
+      - postgres
     ports:
       - "5000:5000"
     volumes:
       - ./Backend:/app
     command: flask run --host=0.0.0.0 --port=5000
 
+  # Frontend Service
   frontend:
     build:
       context: .
       dockerfile: Frontend/Dockerfile
     container_name: clubiq_frontend
-    restart: always
+    restart: unless-stopped
+    depends_on:
+      - backend
     env_file:
       - Frontend/.env
     ports:
@@ -58,9 +66,8 @@ services:
     volumes:
       - ./Frontend:/app
       - /app/node_modules
-    depends_on:
-      - backend
 
+# Persistent Storage
 volumes:
-  pgdata:
+  postgres_data:
   pgadmin_data:
