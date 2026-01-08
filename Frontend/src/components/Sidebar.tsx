@@ -2,6 +2,15 @@
 
 import { useState } from "react";
 import "../styles/sidebar.css";
+import {
+  LayoutDashboard,
+  ListChecks,
+  User,
+  CheckSquare,
+  Users,
+  BarChart3
+} from "lucide-react";
+
 
 type SidebarProps = {
   role: "admin" | "member";
@@ -20,19 +29,21 @@ export default function Sidebar({
 
   
   const memberMenuItems = [
-    { label: "Dashboard", icon: "📊", tab: "overview" },
-    { label: "My Activities", icon: "📋", tab: "activities" },
-    //{ label: "My Ratings", icon: "⭐", tab: "ratings" },
-    { label: "Profile", icon: "👤", tab: "profile" },
-  ];
+  { label: "Dashboard", icon: <LayoutDashboard/>, tab: "overview" },
+  { label: "My Activities", icon: <ListChecks/>, tab: "activities" },
+  // { label: "My Ratings", icon: Star, tab: "ratings" },
+  { label: "Profile", icon: <User/>, tab: "profile" },
+  { label: "My Tasks", icon: <CheckSquare/>, tab: "tasks" },
+];
 
-  const adminMenuItems = [
-    { label: "Dashboard", icon: "📊", tab: "overview" },
-    { label: "Members", icon: "👥", tab: "members" },
-    { label: "Activities", icon: "📋", tab: "activities" },
-    //{ label: "Ratings", icon: "⭐", tab: "ratings" },
-    { label: "Reports", icon: "📈", tab: "reports" },
-  ];
+const adminMenuItems = [
+  { label: "Dashboard", icon: <LayoutDashboard/>, tab: "overview" },
+  { label: "Members", icon: <Users/>, tab: "members" },
+  { label: "Activities", icon: <ListChecks/>, tab: "activities" },
+  // { label: "Ratings", icon: Star, tab: "ratings" },
+  { label: "Reports", icon: <BarChart3/>, tab: "reports" },
+];
+
 
   
   const menuItems = role === "admin" ? adminMenuItems : memberMenuItems;
