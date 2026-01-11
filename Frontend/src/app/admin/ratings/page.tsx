@@ -1,3 +1,9 @@
+import PageShell from "@/components/reusables/PageShell";
+
 export default function RatingsPage() {
-  return <div>Ratings Page</div>;
+  return (
+    <PageShell>
+      <div>Ratings Page</div>
+    </PageShell>
+  );
 }

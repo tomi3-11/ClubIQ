@@ -6,7 +6,7 @@ import { useUser } from "@clerk/nextjs";
 import useSignOut from "@/hooks/useSignOut";
 
 // Dashboard Components
-import Sidebar from "@/components/Sidebar";
+import Sidebar from "@/components/reusables/Sidebar";
 import "../../../styles/dashboard.css"; // Ensure this path matches your dashboard styling
 
 // Task Components

@@ -1,5 +1,5 @@
-import ActivityCard from "../ActivityCard";
-import RatingCard from "../RatingCard";
+import ActivityCard from "../reusables/ActivityCard";
+import RatingCard from "../reusables/RatingCard";
 
 export default function Overview() {
   const activities = [

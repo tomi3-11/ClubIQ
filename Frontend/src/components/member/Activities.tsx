@@ -1,4 +1,4 @@
-import ActivityCard from "../ActivityCard";
+import ActivityCard from "../reusables/ActivityCard";
 
 export default function Activities() {
   const activities = [
