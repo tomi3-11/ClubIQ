@@ -1,12 +1,11 @@
-type paramType = {
-  member_id: string;
-};
-export default async function MembersPage({
-  params,
-}: {
-  params: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
-  const { member_id } = (await params) as paramType;
+import PageShell from "@/components/reusables/PageShell";
 
-  return <>Member ID: {member_id}</>;
+export default async function MembersPage() {
+  return (
+    <PageShell>
+      <div>
+        <h1>This is a list of all members</h1>
+      </div>
+    </PageShell>
+  );
 }

@@ -1,3 +1,5 @@
+import PageShell from "@/components/reusables/PageShell";
+
 type paramType = {
   club_id: string;
 };
@@ -9,5 +11,9 @@ export default async function ActivitiesPageByClubId({
 }) {
   const { club_id } = (await params) as paramType;
 
-  return <>Activities Page for Club ID: {club_id}</>;
+  return (
+    <PageShell>
+      <div>Activities Page for Club ID: {club_id}</div>
+    </PageShell>
+  );
 }

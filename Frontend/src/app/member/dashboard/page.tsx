@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import "../../../styles/dashboard.css";
-import Sidebar from "@/components/Sidebar";
-import ActivityCard from "@/components/ActivityCard";
-import RatingCard from "@/components/RatingCard";
+import Sidebar from "@/components/reusables/Sidebar";
+import ActivityCard from "@/components/reusables/ActivityCard";
+import RatingCard from "@/components/reusables/RatingCard";
 import { useUser } from "@clerk/nextjs";
 import useSignOut from "@/hooks/useSignOut";
 import Profile from "@/components/member/Profile";
@@ -18,11 +18,8 @@ export default function MemberDashboard() {
   const { handleSignOut } = useSignOut();
 
   useEffect(() => {
-
-            customToast("Email verified! Welcome.", "success", 100000);
- 
-
-  }, [])
+    customToast("Email verified! Welcome.", "success", 100000);
+  }, []);
   return (
     <div className='dashboard-container'>
       <Sidebar

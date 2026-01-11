@@ -70,7 +70,7 @@ export default function Page() {
 
       if (response?.status === "complete") {
         console.log("Sign-in successful!");
-        window.location.href = `${window.location.origin}/me`;
+        window.location.href = `${window.location.origin}/auth/sso`;
       }
     } catch (error) {
       customToast("Failed, Try Again", "fail");
