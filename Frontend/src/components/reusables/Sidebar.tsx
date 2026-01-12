@@ -20,7 +20,7 @@ import { usePathname } from "next/navigation";
 import { useAppContext } from "@/context/AppContext";
 
 type SidebarProps = {
-  role: "admin" | "member";
+  role?: "admin" | "member";
 };
 
 export default function Sidebar({ role }: SidebarProps) {
@@ -122,7 +122,7 @@ export default function Sidebar({ role }: SidebarProps) {
             key={item.tab}
             className={`nav-item ${
               pathname.includes(item.href) ? "active" : ""
-            }`}
+            } whitespace-nowrap`}
           >
             <span className='nav-icon'>{item.icon}</span>
 
