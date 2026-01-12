@@ -14,12 +14,12 @@ export default function PageShell({
 }) {
   const { handleSignOut } = useSignOut();
   const { user } = useUser();
+  const role = user?.publicMetadata.role as "admin" | "member" | undefined;
 
   return (
-    <div className='main-page-container min-h-screen h-full flex'>
-      <Sidebar role='admin' />
-
-      <main className='main-page-main grow'>
+    <div className='main-page-container min-h-screen max-h-screen h-full flex'>
+      <Sidebar role={role} />
+      <main className='main-page-main grow max-h-screen overflow-y-auto'>
         <header className='main-page-header px-4 py-3 flex justify-between align-center border-b border-light'>
           <div className='header-content'>
             <h1 className='font-bold text-lg'>Welcome, {user?.firstName}</h1>

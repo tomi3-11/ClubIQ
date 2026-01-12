@@ -1,70 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import "../../../styles/dashboard.css";
-import Sidebar from "@/components/reusables/Sidebar";
-import ActivityCard from "@/components/reusables/ActivityCard";
-import RatingCard from "@/components/reusables/RatingCard";
-import { useUser } from "@clerk/nextjs";
-import useSignOut from "@/hooks/useSignOut";
-import Profile from "@/components/member/Profile";
-import Activities from "@/components/member/Activities";
-import Overview from "@/components/member/Overview";
-import { customToast } from "@/utils/utilities";
+import PageShell from "@/components/reusables/PageShell";
 
 export default function MemberDashboard() {
-  const [activeTab, setActiveTab] = useState("overview");
-  const { user } = useUser();
-  const { handleSignOut } = useSignOut();
-
-  useEffect(() => {
-    customToast("Email verified! Welcome.", "success", 100000);
-  }, []);
   return (
-    <div className='dashboard-container'>
-      <Sidebar
-        role='member'
-        onLogout={handleSignOut}
-        activeTab={activeTab}
-        onSelect={(tab) => setActiveTab(tab)}
-      />
-
-      <main className='dashboard-main'>
-        <header className='dashboard-header'>
-          <div className='header-content'>
-            <h1>Welcome, {user?.username}!</h1>
-            <p>Track your activities and performance</p>
-          </div>
-          <button className='btn btn-outline' onClick={handleSignOut}>
-            Logout
-          </button>
-        </header>
-
-        <div className='dashboard-tabs'>
-          <button
-            className={`tab ${activeTab === "overview" ? "active" : ""}`}
-            onClick={() => setActiveTab("overview")}
-          >
-            Overview
-          </button>
-          <button
-            className={`tab ${activeTab === "activities" ? "active" : ""}`}
-            onClick={() => setActiveTab("activities")}
-          >
-            My Activities
-          </button>
-          <button
-            className={`tab ${activeTab === "profile" ? "active" : ""}`}
-            onClick={() => setActiveTab("profile")}
-          >
-            Profile
-          </button>
-        </div>
-
-        {activeTab === "overview" && <Overview />}
-        {activeTab === "activities" && <Activities />}
-        {activeTab === "profile" && <Profile />}
-      </main>
-    </div>
+    <PageShell>
+      <div className='text-xl'>Welcome to your dashboard</div>
+    </PageShell>
   );
 }
