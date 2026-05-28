@@ -1,25 +1,28 @@
 services:
-
-############################################################
-# Services with Dockerfiles
-############################################################
+  ############################################################
+  # Services with Dockerfiles
+  ############################################################
 
   # Backend Service
   backend:
-    build: ./Backend
+    build: ./backend
     container_name: clubiq-backend
     restart: unless-stopped
     env_file:
-      - ./Backend/backend.env
+      - ./backend/backend.env
     volumes:
-      - ./Backend:/app
+      - ./backend:/app
     networks:
       - clubiq-network
     depends_on:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:5000/api/backend-health || exit 1"]
+      test:
+        [
+          "CMD-SHELL",
+          "curl -f http://localhost:5000/api/backend-health || exit 1",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -27,13 +30,13 @@ services:
 
   # Frontend Service
   frontend:
-    build: ./Frontend
+    build: ./frontend
     container_name: clubiq-frontend
     restart: unless-stopped
     env_file:
-      - ./Frontend/frontend.env
+      - ./frontend/frontend.env
     volumes:
-      - ./Frontend:/app
+      - ./frontend:/app
       - /app/node_modules
     networks:
       - clubiq-network
@@ -41,16 +44,19 @@ services:
       backend:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --spider http://localhost:3000/frontend-health || exit 1"]
+      test:
+        [
+          "CMD-SHELL",
+          "wget --no-verbose --spider http://localhost:3000/frontend-health || exit 1",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 20s
 
-  
-############################################################
-# Services with only images
-############################################################
+  ############################################################
+  # Services with only images
+  ############################################################
 
   # Database
   postgres:
@@ -64,11 +70,15 @@ services:
     env_file:
       - .env
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB -h localhost || exit 1"]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB -h localhost || exit 1",
+        ]
       interval: 5s
       timeout: 5s
       retries: 5
-      start_period: 10s 
+      start_period: 10s
 
   # Reverse Proxy
   nginx:
@@ -87,12 +97,15 @@ services:
       backend:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --spider http://localhost/nginx-health || exit 1"]
+      test:
+        [
+          "CMD-SHELL",
+          "wget --no-verbose --spider http://localhost/nginx-health || exit 1",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 20s
-
 
 ############################################################
 # Volumes and Networks

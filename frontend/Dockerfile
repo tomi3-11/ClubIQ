@@ -7,6 +7,9 @@ FROM node:20-alpine
 # Set working directory
 WORKDIR /app
 
+# Install gcompat for compatibility with Alpine Linux
+RUN apk add --no-cache gcompat
+
 # Install dependencies first (for better caching)
 COPY package*.json ./
 RUN npm install --legacy-peer-deps
