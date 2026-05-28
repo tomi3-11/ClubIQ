@@ -1,11 +1,18 @@
 # ClubIQ
 
-![Python](https://img.shields.io/badge/Python-3.12+-blue?logo=python)
-![Flask](https://img.shields.io/badge/Flask-Backend-black?logo=flask)
-![Next.js](https://img.shields.io/badge/Next.js-Frontend-black?logo=nextdotjs)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-336791?logo=postgresql)
-![Docker](https://img.shields.io/badge/Docker-Containerized-blue?logo=docker)
-![Clerk](https://img.shields.io/badge/Clerk-Authentication-4F46E5?logo=clerk)
+<p align='center'>
+<img src="https://img.shields.io/badge/Python-3.10+-blue?logo=python">
+<img src="https://img.shields.io/badge/Flask-Backend-black?logo=flask">
+<img src="https://img.shields.io/badge/Next.js-Frontend-black?logo=nextdotjs">
+<img src="https://img.shields.io/badge/PostgreSQL-Database-336791?logo=postgresql">
+<img src="https://img.shields.io/badge/Docker-Containerized-blue?logo=docker">
+<img src="https://img.shields.io/badge/Clerk-Authentication-4F46E5?logo=clerk">
+<img src="https://img.shields.io/badge/License-MIT-green">
+<img src="https://img.shields.io/badge/Maintained-Yes-brightgreen.svg">
+<img src="https://img.shields.io/github/contributors/tomi3-11/ClubIQ">
+</p>
+
+![Logo](frontend/public/images/readme-logo.png)
 
 ## Overview
 
@@ -22,14 +29,24 @@ It includes:
 
 ## Table of Contents
 
-1. [Project Structure](#project-structure)
-1. [Setup and Installation](#setup-and-installation)
-1. [Docker Quick Start](#docker-quick-start)
-1. [Manual Setup](#manual-setup)
-1. [API Reference](#api-reference)
-1. [Testing](#testing)
-1. [Contribution Guide](#contribution-guide)
-1. [License](#license)
+<!--toc:start-->
+- [ClubIQ](#clubiq)
+  - [Overview](#overview)
+  - [Table of Contents](#table-of-contents)
+  - [Project Structure](#project-structure)
+  - [Setup and Installation](#setup-and-installation)
+    - [Step 1: Install Docker](#step-1-install-docker)
+    - [Step 2 (Windows Recommended): Setup Node in WSL with NVM](#step-2-windows-recommended-setup-node-in-wsl-with-nvm)
+    - [Step 3: Install Make (Optional)](#step-3-install-make-optional)
+  - [Docker Quick Start](#docker-quick-start)
+  - [Manual Setup](#manual-setup)
+    - [Backend (without Docker)](#backend-without-docker)
+    - [Frontend (without Docker)](#frontend-without-docker)
+  - [API Reference](#api-reference)
+  - [Testing](#testing)
+  - [Contribution Guide](#contribution-guide)
+  - [License](#license)
+<!--toc:end-->
 
 ## Project Structure
 
@@ -56,6 +73,8 @@ ClubIQ/
 |-- README.md
 `-- .gitignore
 ```
+
+Have a look at the [structure.md](structure.md) to get an full overview of the project structure.
 
 ## Setup and Installation
 
@@ -99,31 +118,10 @@ npm -v
 
 ### Step 3: Install Make (Optional)
 
-`make` is optional but recommended for common Docker workflows.
+`gnu make` is optional but we highly recommend installing it.
 
-- macOS:
+Install it by either visiting the [official Make website](https://www.gnu.org/software/make/) or using your package manager.
 
-```bash
-brew install make
-```
-
-- Debian/Ubuntu:
-
-```bash
-sudo apt install make
-```
-
-- Fedora:
-
-```bash
-sudo dnf install make
-```
-
-- Arch:
-
-```bash
-sudo pacman -S make
-```
 
 ## Docker Quick Start
 
@@ -137,15 +135,15 @@ cp Backend/backend.env.example Backend/backend.env
 cp Frontend/frontend.env.example Frontend/frontend.env
 ```
 
-1. Set `POSTGRES_USER`, `POSTGRES_PASSWORD`, and `POSTGRES_DB` in both `.env` and `Backend/backend.env` so Compose interpolation and container runtime use the same database credentials.
+2. Set `POSTGRES_USER`, `POSTGRES_PASSWORD`, and `POSTGRES_DB` in both `.env` and `Backend/backend.env` so Compose interpolation and container runtime use the same database credentials.
 
-1. Build and start services:
+3. Build and start services:
 
 ```bash
 make build
 ```
 
-1. Open the app at <http://localhost>.
+4. Open the app at <http://localhost>.
 
 Current Docker access model:
 

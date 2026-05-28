@@ -6,8 +6,8 @@ BACKEND_ID  = $(shell docker compose ps -q backend)
 POSTGRES_ID = $(shell docker compose ps -q postgres)
 NGINX_ID    = $(shell docker compose ps -q nginx)
 
-# Help colors (auto-disabled for non-interactive output or NO_COLOR)
-COLOR_ENABLED = $(shell if [ -t 1 ] && [ -z "$(NO_COLOR)" ]; then echo 1; fi)
+# Help colors (enabled by default, disable with NO_COLOR)
+COLOR_ENABLED = $(shell if [ -z "$(NO_COLOR)" ]; then echo 1; fi)
 ifeq ($(COLOR_ENABLED),1)
 CLR_RESET  = \033[0m
 CLR_BOLD   = \033[1m
