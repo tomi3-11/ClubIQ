@@ -3,7 +3,7 @@
 backend.env
 frontend.env
 backend.env.local
-frontend.env.local 
+frontend.env.local
 
 # Cache
 __pycache__/
@@ -14,7 +14,7 @@ venv
 .venv
 
 # Database
-app.db 
+app.db
 sqlite3.db
 .db
 migrations
@@ -31,10 +31,3 @@ logs/
 node_modules/
 .next/
 club/
-
-# Design files
-*.psd
-*.ai
-*.sketch
-*.pencil
-*.pen

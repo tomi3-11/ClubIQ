@@ -127,7 +127,7 @@ sudo pacman -S make
 
 ## Docker Quick Start
 
-See [docs/Docker.md](docs/Docker.md) for detailed Docker usage.
+See [docs/docker.md](/docs/docker.md) for detailed Docker usage.
 
 1. Create service env files from templates:
 
