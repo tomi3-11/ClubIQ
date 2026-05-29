@@ -200,12 +200,12 @@ In Docker mode, keep `.env` and `Backend/backend.env` aligned: root `.env` feeds
 
 Endpoint documentation:
 
-- [Authentication](Backend/endpoint_documentation/authentication.md)
-- [Clubs](Backend/endpoint_documentation/clubs.md)
-- [Members](Backend/endpoint_documentation/members.md)
-- [Activities](Backend/endpoint_documentation/activities.md)
-- [Rating](Backend/endpoint_documentation/ratings.md)
-- [Invitations](Backend/endpoint_documentation/invitations.md)
+- [Authentication](/backend/endpoint_documentation/authentication.md)
+- [Clubs](/backend/endpoint_documentation/clubs.md)
+- [Members](/backend/endpoint_documentation/members.md)
+- [Activities](/backend/endpoint_documentation/activities.md)
+- [Rating](/backend/endpoint_documentation/ratings.md)
+- [Invitations](/backend/endpoint_documentation/invitations.md)
 
 ## Testing
 
